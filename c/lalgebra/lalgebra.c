@@ -100,7 +100,7 @@ int **add_matrices(int m[2][4], int m2[2][4], int size) {
 
   }
 
-  for (int i = 0; i < size; i++) {
+  for (int i = 0; i < 2; i++) {
 
     for (int j = 0; j < size; j++) {
 
@@ -112,6 +112,30 @@ int **add_matrices(int m[2][4], int m2[2][4], int size) {
   return add;
 
 
+
+}
+
+int **sub_matrices(int m[2][4], int m2[2][4], int size) {
+
+  int **sub;
+
+  sub = malloc(sizeof(int*) * size);
+  for (int i = 0; i < size; i++) {
+
+    sub[i] = malloc(sizeof(int*) * size);
+
+  }
+
+  for (int i = 0; i < 2; i++) {
+
+    for (int j = 0; j < size; j++) {
+
+      sub[i][j] = m[i][j] + m2[i][j];
+
+    }
+
+  }
+  return sub;
 
 }
 
