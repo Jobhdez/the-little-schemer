@@ -1,8 +1,19 @@
+// author: Job Hernandez <hj93@protonmail.com>
+
 #include <stdio.h>
 #include <stdlib.h>
 
 // vectors
 
+
+/*
+
+  @param vec: a vector
+  @param vec2: a vector
+  @returns: the sum of VEC and VEC2
+
+
+*/
 int *add_vectors(int vec[], int vec2[], int size) {
 
   int *sum = malloc(size);
@@ -25,6 +36,14 @@ int *add_vectors(int vec[], int vec2[], int size) {
 
 }
 
+/*
+
+  @param vec: a vector
+  @param vec2: a vector
+  @returns: the subtraction of VEC and VEC2
+
+
+*/
 int *sub_vectors(int vec[], int vec2[], int size) {
 
   int *sub = malloc(size);
@@ -45,7 +64,14 @@ int *sub_vectors(int vec[], int vec2[], int size) {
 
 
 }
+/*
 
+  @param vec: a vector
+  @param vec2: a vector
+  @returns: the multiplication of VEC and VEC2
+
+
+*/
 int *mul_vectors(int vec[], int vec2[], int size) {
 
   int *mul = malloc(size);
@@ -65,6 +91,15 @@ int *mul_vectors(int vec[], int vec2[], int size) {
   return mul;
 
 }
+
+/*
+
+  @param vec: a vector
+  @param scalar: a scalar
+  @returns: the product of VEC and the SCALAR
+
+
+*/
 
 int *mul_scalar(int vec[], int scalar, int size) {
 
@@ -87,6 +122,15 @@ int *mul_scalar(int vec[], int scalar, int size) {
 }
 
 // matrices
+
+/*
+
+  @param m: a matrix
+  @param m2: a matrix
+  @returns: the sum of M and M2
+
+
+*/
 
 int **add_matrices(int m[2][4], int m2[2][4], int size) {
 
@@ -115,6 +159,14 @@ int **add_matrices(int m[2][4], int m2[2][4], int size) {
 
 }
 
+/*
+
+  @param m: a matrix
+  @param m2: a matrix
+  @returns: the subtraction of M and M2
+
+
+*/
 int **sub_matrices(int m[2][4], int m2[2][4], int size) {
 
   int **sub;
@@ -138,6 +190,44 @@ int **sub_matrices(int m[2][4], int m2[2][4], int size) {
   return sub;
 
 }
+
+/*
+
+  @param m: a matrix
+  @param scalar: a scalar
+  @returns: the multiplication of the scalar and the matrix
+
+  the Scalar is multiplied by each member of the matrix.
+
+
+*/
+
+int **mul_scalar(int m[2][4], int scalar, int size) {
+
+  int **mul;
+
+  mul = malloc(sizeof(int*) * size);
+
+  for (int i = 0; i < size; i++) {
+
+    mul[i] = malloc(sizeof(int*) * size);
+
+  }
+
+  for (int i = 0; i < 2; i++) {
+
+    for (int j = 0; j < size; j++) {
+
+      mul[i][j] = m[i][j] * scalar;
+
+    }
+
+  }
+  return mul;
+
+}
+
+// some examples :-)
 
 int main () {
 
