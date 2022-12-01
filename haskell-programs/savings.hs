@@ -1,9 +1,12 @@
 import qualified Data.Map as Map
 
-type Months = Int
-type HoursWorked = Int
-type HourlyRate = Int
-type TotalSavings = Int
+type Months = Float
+type HoursWorked = Float
+type HourlyRate = Float
+type TotalSavings = Float
+type TotalIncome = Float
+
+taxRates = Map.fromList [("WA", 10.0), ("CA", 12.0), ("NY", 12.0)]
 
 describeIncome :: TotalSavings -> String
 describeIncome savings =
@@ -15,14 +18,16 @@ computeTaxes months hrs rate =
   income - taxes
   where
     income = computeIncome months hrs rate
-    taxes = 200
+    taxes = (taxRate / 100.0) * income2 where
+      taxRate = 10.0
+      income2 = computeIncome months hrs rate
   
-computeIncome :: Months -> HoursWorked -> HourlyRate -> TotalSavings
+computeIncome :: Months -> HoursWorked -> HourlyRate -> TotalIncome
 computeIncome months hours rate =
   months * income
   where
     income = (hours * rate) * weeks where
-      weeks = 4
+      weeks = 4.0
 
 main :: IO ()
 main = do
