@@ -15,7 +15,7 @@ computeTaxes months hrs rate =
   income - taxes
   where
     income = computeIncome months hrs rate
-    taxes = (10/100) * (computeIncome  months hrs rate)
+    taxes = 200
   
 computeIncome :: Months -> HoursWorked -> HourlyRate -> TotalSavings
 computeIncome months hours rate =
