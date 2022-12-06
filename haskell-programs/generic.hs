@@ -1,3 +1,12 @@
+{-
+
+this is just a little program to get an idea of how type classes work and 
+also to give me an idea of how I would implement a generic math system.
+haskell is such an elegant language. I really like type classes.
+
+
+-}
+
 class MathObject a where
     add :: a -> a -> a
     sub :: a -> a -> a
@@ -5,12 +14,12 @@ class MathObject a where
 
 
 type Fraction = (Int, Int)
-type Vector = [Int]
-type Matrix = [[Int]]
 
 data Frac = Frac Fraction deriving (Show, Eq)
 
-data Vec = Vec Vector deriving (Show, Eq)
+data Vector = Vector [Int] deriving (Show, Eq)
+
+data Matrix = Matrix [[Int]] deriving (Show, Eq)
 
 
 instance MathObject Frac where
@@ -18,10 +27,15 @@ instance MathObject Frac where
     sub (Frac (num, denom)) (Frac (num2, denom2))  = subFractions (Frac (num, denom)) (Frac (num2, denom2))
     mul (Frac (num, denom)) (Frac (num2, denom2))  = mulFractions (Frac (num, denom)) (Frac (num2, denom2))
 
-instance MathObject Vec where 
-    add (Vec v1) (Vec v2) = addVecs (Vec v1) (Vec v2)
-    sub (Vec v1) (Vec v2) = subVecs (Vec v1) (Vec v2)
-    mul (Vec v1) (Vec v2) = mulVecs (Vec v1) (Vec v2)
+instance MathObject Vector where
+    add = pointWise (+)
+    sub = pointWise (-)
+    mul = pointWise (*)
+
+instance MathObject Matrix where
+    add = matrixArith (+)
+    sub = matrixArith (-)
+    mul = matrixArith (*)
 
 
 addFractions :: Frac -> Frac -> Frac
@@ -42,22 +56,12 @@ mulFractions (Frac (n, d)) (Frac (n2, d2)) =
         numerator = n*n2
         denominator = d*d2
 
-addVecs :: Vec -> Vec -> [Int]
-addVecs (Vec []) (Vec vec2)= (Vec [])
-addVecs (Vec vec) (Vec []) = (Vec [])
-addVecs (Vec (x:xs)) (Vec (y:ys)) = e1+e2:rest where
-  e1 = x
-  e2 = y
-  rest = addVecs (Vec xs) (Vec ys)
 
-subVecs :: Vec -> Vec -> [Int]
-subVecs (Vec []) (Vec v2) = (Vec [])
-subVecs (Vec (x:xs)) (Vec (y:ys)) = x-y:rest where
-  rest = subVecs (Vec xs) (Vec ys)
+pointWise :: (Int -> Int -> Int) -> (Vector -> Vector -> Vector)
+pointWise f (Vector v1) (Vector v2) = Vector $ zipWith f v1 v2
 
-mulVecs :: Vec -> Vec -> [Vec]
-mulVecs (Vec []) (Vec vec2) = (Vec [])
-mulVecs (Vec (x:xs)) (Vec (y:ys)) = e1 * e2:rest where
-  e1 = x
-  e2 = y
-  rest = mulVecs (Vec xs) (Vec ys)
+
+matrixArith :: (Int -> Int -> Int) -> (Matrix -> Matrix -> Matrix)
+matrixArith f (Matrix m1) (Matrix m2) = 
+    Matrix $ add m1 m2 where 
+        add = zipWith (zipWith f)
