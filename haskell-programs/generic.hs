@@ -18,6 +18,8 @@ data Vector = Vector [Int] deriving (Show, Eq)
 
 data Matrix = Matrix [[Int]] deriving (Show, Eq)
 
+data Poly = Poly [Int] deriving (Show, Eq)
+
 
 instance MathObject Frac where
     add (Frac (num, denom)) (Frac (num2, denom2))  = addFractions (Frac (num, denom)) (Frac (num2, denom2))
@@ -34,7 +36,13 @@ instance MathObject Matrix where
     sub = matrixArith (-)
     mul = matrixArith (*)
 
-
+instance MathObject Poly where 
+    add = polyArith (+)
+    sub = polyArith (-)
+    mul = polyArith (*)
+-------------   
+-- Fractions
+---------------
 addFractions :: Frac -> Frac -> Frac
 addFractions (Frac (n, d)) (Frac (n2, d2))=
     (Frac (numerator, denominator)) where 
@@ -53,12 +61,25 @@ mulFractions (Frac (n, d)) (Frac (n2, d2)) =
         numerator = n*n2
         denominator = d*d2
 
-
+--------------
+-- vectors
+---------------
 pointWise :: (Int -> Int -> Int) -> (Vector -> Vector -> Vector)
 pointWise f (Vector v1) (Vector v2) = Vector $ zipWith f v1 v2
 
-
+---------------
+-- matrix
+---------------
 matrixArith :: (Int -> Int -> Int) -> (Matrix -> Matrix -> Matrix)
 matrixArith f (Matrix m1) (Matrix m2) = 
     Matrix $ compute m1 m2 where 
         compute = zipWith (zipWith f)
+
+-------------
+---- polynomials 
+--------------
+
+polyArith :: (Int -> Int -> Int) -> (Poly -> Poly -> Poly)
+polyArith f (Poly p1) (Poly p2) =
+    Poly $ zipWith f p1 p2
+
