@@ -63,5 +63,5 @@ pointWise f (Vector v1) (Vector v2) = Vector $ zipWith f v1 v2
 
 matrixArith :: (Int -> Int -> Int) -> (Matrix -> Matrix -> Matrix)
 matrixArith f (Matrix m1) (Matrix m2) = 
-    Matrix $ add m1 m2 where 
-        add = zipWith (zipWith f)
+    Matrix $ compute m1 m2 where 
+        compute = zipWith (zipWith f)
