@@ -83,3 +83,31 @@ polyArith :: (Int -> Int -> Int) -> (Poly -> Poly -> Poly)
 polyArith f (Poly p1) (Poly p2) =
     Poly $ zipWith f p1 p2
 
+evalPolynomial :: Poly -> Int -> Int
+evalPolynomial p1 x =
+    sum terms where
+        terms = evalTerms p1 x
+
+evalTerms :: Poly -> Int -> [Int]
+evalTerms (Poly p1) x =
+    case p1 of
+        [] -> []
+        _ -> (x ^ len) * head p1:rest where 
+            len = (length p1) - 1
+            rest = evalTerms (Poly poly) x where 
+                 poly = tail p1
+
+derive :: Poly -> Poly
+derive p1 =
+    Poly exp where 
+        exp = deriveTerms p1
+
+deriveTerms :: Poly -> [Int]
+deriveTerms (Poly p1) =
+  if length p1 == 1 
+    then [] 
+    else derivedPoly where
+            derivedPoly = (head p1) * exponent:rest where 
+                exponent = (length p1) - 1
+                rest = deriveTerms (Poly poly) where 
+                    poly = tail p1
