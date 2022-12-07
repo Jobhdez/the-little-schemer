@@ -12,10 +12,7 @@ class MathObject a where
     sub :: a -> a -> a
     mul :: a -> a -> a
 
-
-type Fraction = (Int, Int)
-
-data Frac = Frac Fraction deriving (Show, Eq)
+data Frac = Frac (Int, Int) deriving (Show, Eq)
 
 data Vector = Vector [Int] deriving (Show, Eq)
 
