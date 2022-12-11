@@ -1,23 +1,18 @@
-data XExpression = ExpNumber Int | ExpVar Char | ExpE Char Char Int deriving (Eq,Show)
+data Expr = PNum Int | PVar Char | CExpr Expr Expr Expr deriving (Eq,Show)
 
--- example
-e :: XExpression
-e = ExpE 'x' '+' 2
 
 -- derive
-derive :: XExpression -> XExpression
-derive (ExpNumber n) = ExpNumber 0
-derive (ExpVar v) = ExpNumber 1
-derive (ExpE v op n) = ExpNumber 1
+derive :: Expr -> Expr
+derive (PNum n) = PNum 0
+derive (PVar v) = PNum 1
+derive (CExpr v (PVar op) n) = 
+    if op == '+'
+        then CExpr (derive v) (PVar op) (derive n)
+        else if op == '-' 
+            then CExpr (derive v) (PVar op) (derive n)
+        else CExpr (CExpr v (PVar '*') (derive n)) (PVar '+') (CExpr n (PVar '*') (derive v))
+    
 
--- selectors
-getVar :: XExpression -> Char
-getVar (ExpE v _ _) = v
 
-getOp :: XExpression -> Char
-getOp (ExpE _ op _) = op
-
-getNum :: XExpression -> Int
-getNum (ExpE _ _ i) = i
 
 
