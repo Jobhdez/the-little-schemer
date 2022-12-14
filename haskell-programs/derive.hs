@@ -60,3 +60,10 @@ simplify (CExpr x op y) =
     CExpr (simplify x) op (simplify y)
 
 
+printExpr :: Expr -> String
+printExpr (PNum n) = show n
+printExpr (PVar v) = show v
+printExpr (CExpr (PNum n) (PVar op) (PNum n2)) =
+    show n ++ " " ++ show op ++ " " ++ show n2
+printExpr (CExpr (CExpr (PNum n) (PVar op) (PNum n2)) (PVar op2) (PNum n3)) =
+    "(" ++ show n ++ " "  ++ show op ++ " " ++ show n2 ++ ")" ++ " " ++ show op2 ++ " " ++ show n3
