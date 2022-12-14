@@ -2,19 +2,19 @@ data Expr = PNum Int | PVar Char | CExpr Expr Expr Expr deriving (Eq,Show)
 
 
 -- derive
-derive :: Expr -> Expr
-derive (PNum n) = PNum 0
-derive (PVar v) = PNum 1
-derive (CExpr v (PVar op) n) = 
+derivative :: Expr -> Expr
+derivative (PNum n) = PNum 0
+derivative (PVar v) = PNum 1
+derivative (CExpr v (PVar op) n) = 
     if op == '+'
-        then CExpr (derive v) (PVar op) (derive n)
+        then CExpr (derivative v) (PVar op) (derivative n)
         else if op == '-' 
-            then CExpr (derive v) (PVar op) (derive n)
+            then CExpr (derivative v) (PVar op) (derivative n)
         else if op == '/' 
-            then CExpr (CExpr (CExpr (derive v) (PVar '*') n) (PVar '+') (CExpr v (PVar '*') (derive n))) (PVar '/') (CExpr n (PVar '^') (PNum 2))
+            then CExpr (CExpr (CExpr (derivative v) (PVar '*') n) (PVar '+') (CExpr v (PVar '*') (derivative n))) (PVar '/') (CExpr n (PVar '^') (PNum 2))
         else if op == '^' 
             then CExpr (CExpr n (PVar '*') v) (PVar '^') (PNum ((getNum n) - 1))
-        else CExpr (CExpr v (PVar '*') (derive n)) (PVar '+') (CExpr n (PVar '*') (derive v))
+        else CExpr (CExpr v (PVar '*') (derivative n)) (PVar '+') (CExpr n (PVar '*') (derivative v))
 
 getNum :: Expr -> Int
 getNum x = 
