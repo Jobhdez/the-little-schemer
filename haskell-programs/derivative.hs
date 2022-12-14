@@ -1,7 +1,16 @@
+{-
+
+this is a tiny symbolic differentiator system. as you can see, it covers
+the product and quotient rules, and addition and subtraction of derivatives.
+this is nothing serious --- I built this to pick up haskell :-)
+
+-}
+
 data Expr = PNum Int | PVar Char | CExpr Expr Expr Expr deriving (Eq,Show)
 
 
--- derive
+-- differentiation:
+-- `derivative` takes the derivative of EXPR with respect to x
 derivative :: Expr -> Expr
 derivative (PNum n) = PNum 0
 derivative (PVar v) = PNum 1
@@ -21,6 +30,8 @@ getNum x =
     case x of
         PNum i -> i
 
+-- simplification
+-- `simplify`, well, simplifies the output of `derivative`
 simplify :: Expr -> Expr
 simplify (PNum n) = (PNum n)
 simplify (PVar v) = (PVar v)
@@ -65,7 +76,7 @@ simplify (CExpr (PNum n1) (PVar op) (PNum n2)) =
 simplify (CExpr x op y) =
     CExpr (simplify x) op (simplify y)
 
-
+-- print Exprs
 printExpr :: Expr -> String
 printExpr (PNum n) = show n
 printExpr (PVar v) = show v
