@@ -1,0 +1,17 @@
+########################
+#                      #
+# the little schemer   #
+#######################
+
+#### this repo contains some learning sessions:
+
+###  haskell, c, and racket programs
+
+quick exercises to learn  Haskell, C and Racket programs;
+
+e.g., I wrote a little parser in racket to get my feet wet and learn how to to use the parser generator.
+
+e.g., In Haskell I wrote a little symobolic differentiator and a polymorphic tiny math system.
+
+e.g., In C I wrote a little basic linear algebra system. you cant return arrays like in python or lisp; you need to use pointers! Cool stuff 
+
