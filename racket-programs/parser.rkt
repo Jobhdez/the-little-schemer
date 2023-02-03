@@ -31,7 +31,7 @@
 (struct pysubtraction (e1 e2))
 
 (struct pyassignment (var e1))
-(provide the-parser)
+
 (define the-parser
   (parser
    [start mod]
