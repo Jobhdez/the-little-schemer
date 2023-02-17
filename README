@@ -13,5 +13,8 @@ e.g., I wrote a little parser in racket to get my feet wet and learn how to to u
 
 e.g., In Haskell I wrote a little symobolic differentiator and a polymorphic tiny math system among other tiny programs.
 
-e.g., In C I wrote a little basic linear algebra system. you cant return arrays like in python or lisp; you need to use pointers! Cool stuff 
+e.g., In C I wrote a little basic linear algebra system. you cant return arrays like in python or lisp; you need to use pointers! Cool stuff. I have also done some quick exercises and wrote some notes about how pointers work.
 
+to understand pointers check this stackoverflow answer:
+
+https://stackoverflow.com/questions/33746434/double-pointer-vs-array-of-pointersarray-vs-array
