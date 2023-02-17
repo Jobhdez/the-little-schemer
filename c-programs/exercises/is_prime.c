@@ -15,3 +15,10 @@ int is_prime(int n) {
 void check(int n) {
   printf("%d -> %d\n", n, is_prime(n));
 }
+
+int main(void) {
+  int i;
+  for (i = 1; i < 12; i = i + 1) {
+    check(i);
+  }
+}
