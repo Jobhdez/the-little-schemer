@@ -22,6 +22,33 @@ vector *add_vectors(vector *v1, vector *v2) {
   return result;
 }
 
+vector *sub_matrices(vector *v1, vector *v2) {
+  vector *result;
+  result->data = malloc(v1->length);
+  result->length = v1->length;
+
+  if (!result->data) {
+    return NULL;
+  }
+
+  for (int i = 0; v1->length; i++) {
+    result->data[i] = v1->data[i] - v2->data[i];
+  }
+  return result;
+}
+
+vector *vec_mul_by_scalar(vector *v1, int scalar) {
+  vector *result;
+  result->data = malloc(v1->length);
+  result->length = v1->length;
+
+  for (int i = 0; i < v1->length; i++) {
+    
+    result->data[i] = v1->data[i] * scalar;
+  }
+  return result;
+}
+
 int print_vector(vector *v1) {
 
   if (v1->data) {
