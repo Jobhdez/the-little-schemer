@@ -6,7 +6,7 @@ typedef struct vector {
   int *data;
 } vector;
 
-vector *add_vectors(vector v1, vector v2) {
+vector *add_vectors(vector *v1, vector *v2) {
   vector *result;
   result->data = malloc(v1->length);
   result->length = v1->length;
@@ -22,20 +22,29 @@ vector *add_vectors(vector v1, vector v2) {
   return result;
 }
 
-int print_vector(vector v1) {
-  int *vec_data = v1->data;
+int print_vector(vector *v1) {
 
-  if (vec_data) {
+  if (v1->data) {
     for (int i = 0; i < v1->length; i++) {
-      printf("%d", vec_data[i]);
+      printf("%d", v1->data[i]);
     }
   }
-  free(vec_data);
+  free(v1->data);
+}
 
-  int main() {
-    vector v1;
-    v1->length = 4;
-    v1->data = [1,2,3,4];
+int main(void) {
+  vector *v1 = calloc(1, sizeof(*v1));
+  v1->length = 4;
+  v1->data = calloc(v1->length, sizeof(*v1->data));
+  for (int i = 0; i < v1->length; i++) {
+    v1->data[i] = i;
+    }
+  vector *result = add_vectors(v1, v1);
+    //print_vector(result);
+  for (int j = 0; j < v1->length; j++) {
+    printf("%d", result->data[j]);
+    }
+}
 
     
     
