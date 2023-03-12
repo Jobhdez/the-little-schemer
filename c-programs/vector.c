@@ -6,6 +6,42 @@ typedef struct vector {
   int *data;
 } vector;
 
+typedef struct poly {
+  int degree;
+  int *coefficients;
+} poly;
+
+poly *add_polys(poly *p1, poly *p2) {
+  poly *p3;
+  int size = p1->degree + 1;
+  p3->coefficients = malloc(size);
+  p3->degree = p1->degree;
+  
+
+  for (int i = 0; i < size; i++) {
+    p3->coefficients[i] = p1->coefficients[i] + p2->coefficients[i];
+    }
+ 
+
+  
+
+  return p3;
+}
+      
+int eval_poly(poly *p1, int x) {
+  int sum = 0;
+  int inter;
+  for (int i = 0; p1->degree+1; i++) {
+    inter = p1->coefficients[i] * x;
+    sum = sum + inter;
+  }
+  return sum;
+}
+
+
+
+
+  
 vector *add_vectors(vector *v1, vector *v2) {
   vector *result;
   result->data = malloc(v1->length);
@@ -71,6 +107,30 @@ int main(void) {
   for (int j = 0; j < v1->length; j++) {
     printf("%d", result->data[j]);
     }
+
+  printf("\n");
+  printf("---------polynomials-------\n");
+
+  poly *p1 = calloc(1, sizeof(*p1));
+  p1->degree = 3;
+  int size = p1->degree + 1;
+  p1->coefficients = calloc(size, sizeof(*p1->coefficients));
+
+  for (int k = 0; k < size; k++) {
+    p1->coefficients[k] = k;
+  }
+
+  poly *result_poly = add_polys(p1, p1);
+  int deg = result_poly->degree;
+  
+  for (int i = 0; i < result_poly->degree + 1; i++) {
+    printf("%dx^%d+", result_poly->coefficients[i], deg);
+    deg = deg - 1;
+
+}
+  printf("\n");
+  printf("---eval---\n");
+  printf("eval: %d\n", eval_poly(p1, 2));
 }
 
     
