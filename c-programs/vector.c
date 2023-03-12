@@ -31,7 +31,7 @@ poly *add_polys(poly *p1, poly *p2) {
 int eval_poly(poly *p1, int x) {
   int sum = 0;
   int inter;
-  for (int i = 0; p1->degree+1; i++) {
+  for (int i = 0; i < p1->degree+1; i++) {
     inter = p1->coefficients[i] * x;
     sum = sum + inter;
   }
