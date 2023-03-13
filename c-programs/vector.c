@@ -79,20 +79,25 @@ vector *vec_mul_by_scalar(vector *v1, int scalar) {
   }
   return result;
 }
-
-int dot_product(vector *v1, vector *v2) {
-
-  vector *inter_vec;
-  inter_vec->data = malloc(v1->length);
-  inter_vec->length = v1->length;
-
+vector *element_wise_product(vector *v1, vector *v2) {
+  vector *element_wise;
+  element_wise->data = malloc(v1->length);
+  element_wise->length = v1->length;
+  
   for (int i = 0; i < v1->length; i++) {
-    inter_vec->data[i] = v1->data[i] * v2->data[i];
+    element_wise->data[i] = v1->data[i] * v2->data[i];
   }
 
+  return element_wise;
+}
+int dot_product(vector *v1) {
+
+
   int sum = 0;
+  int inter;
   for (int j = 0; j < v1->length; j++) {
-    sum = sum + inter_vec->data[j];
+    inter = v1->data[j];
+    sum = sum + inter;
   }
 
   return sum;
@@ -144,10 +149,14 @@ int main(void) {
   printf("\n");
   printf("---eval---\n");
   printf("eval: %d\n", eval_poly(p1, 2));
-
-  printf("\n");
+  
+  //printf("\n");
   printf("----dot product----");
-  printf("dotp: %d\n", dot_product(v1, v1));
+  vector *element_wise_prod = element_wise_product(v1, v1);
+  for (int i = 0; i<element_wise_prod->length; i++) {
+    printf("%d", element_wise_prod->data[i]);
+  }
+    //printf("dotp: %d\n", dot_product(element_wise_prod));
   
 }
 
