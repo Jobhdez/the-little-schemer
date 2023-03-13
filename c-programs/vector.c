@@ -1,6 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/*
+this is a just an experiment to try c out so I didnt write any comments :)
+
+happy programming!
+
+
+*/
+
+
+
 typedef struct vector {
   int length;
   int *data;
