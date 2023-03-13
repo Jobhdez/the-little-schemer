@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 typedef struct vector {
-  unsigned int length;
+  int length;
   int *data;
 } vector;
 
@@ -14,6 +14,7 @@ typedef struct poly {
 poly *add_polys(poly *p1, poly *p2) {
   poly *p3;
   int size = p1->degree + 1;
+  
   p3->coefficients = malloc(size);
   p3->degree = p1->degree;
   
@@ -21,9 +22,6 @@ poly *add_polys(poly *p1, poly *p2) {
   for (int i = 0; i < size; i++) {
     p3->coefficients[i] = p1->coefficients[i] + p2->coefficients[i];
     }
- 
-
-  
 
   return p3;
 }
@@ -37,9 +35,6 @@ int eval_poly(poly *p1, int x) {
   }
   return sum;
 }
-
-
-
 
   
 vector *add_vectors(vector *v1, vector *v2) {
@@ -58,7 +53,7 @@ vector *add_vectors(vector *v1, vector *v2) {
   return result;
 }
 
-vector *sub_matrices(vector *v1, vector *v2) {
+vector *sub_vectors(vector *v1, vector *v2) {
   vector *result;
   result->data = malloc(v1->length);
   result->length = v1->length;
@@ -83,6 +78,24 @@ vector *vec_mul_by_scalar(vector *v1, int scalar) {
     result->data[i] = v1->data[i] * scalar;
   }
   return result;
+}
+
+int dot_product(vector *v1, vector *v2) {
+
+  vector *inter_vec;
+  inter_vec->data = malloc(v1->length);
+  inter_vec->length = v1->length;
+
+  for (int i = 0; i < v1->length; i++) {
+    inter_vec->data[i] = v1->data[i] * v2->data[i];
+  }
+
+  int sum = 0;
+  for (int j = 0; j < v1->length; j++) {
+    sum = sum + inter_vec->data[j];
+  }
+
+  return sum;
 }
 
 int print_vector(vector *v1) {
@@ -131,6 +144,11 @@ int main(void) {
   printf("\n");
   printf("---eval---\n");
   printf("eval: %d\n", eval_poly(p1, 2));
+
+  printf("\n");
+  printf("----dot product----");
+  printf("dotp: %d\n", dot_product(v1, v1));
+  
 }
 
     
