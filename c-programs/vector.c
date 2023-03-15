@@ -6,9 +6,7 @@ this is a just an experiment to try c out so I didnt write any comments :)
 
 happy programming!
 
-
 */
-
 
 
 typedef struct vector {
@@ -20,6 +18,11 @@ typedef struct poly {
   int degree;
   int *coefficients;
 } poly;
+
+/*
+basic Polynomials
+
+*/
 
 poly *add_polys(poly *p1, poly *p2) {
   poly *p3;
@@ -35,7 +38,33 @@ poly *add_polys(poly *p1, poly *p2) {
 
   return p3;
 }
-      
+poly *sub_polys(poly *p1, poly *p2) {
+  poly *p3;
+  int size = p1->degree + 1;
+
+  p3->coefficients = malloc(size);
+  p3->degree = p1->degree;
+
+  for (int i = 0; i < size; i++) {
+    p3->coefficients[i] = p1->coefficients[i] + p2->coefficients[i];
+  }
+
+  return p3;
+}
+
+poly *derivative(poly *p1) {
+  poly *p2;
+  p2->degree = p1->degree - 1;
+  p2->coefficients = malloc(p1->degree);
+
+  int deg = p1->degree;
+  for (let i = 0; i < p1->degree + 1; i++) {
+    p2->coefficients[i] = p1->coefficients[i] * deg;
+    deg = deg - 1;
+  }
+  return p2;
+}
+  
 int eval_poly(poly *p1, int x) {
   int sum = 0;
   int inter;
@@ -162,12 +191,20 @@ int main(void) {
   
   //printf("\n");
   printf("----dot product----");
-  vector *element_wise_prod = element_wise_product(v1, v1);
-  for (int i = 0; i<element_wise_prod->length; i++) {
-    printf("%d", element_wise_prod->data[i]);
+  vector *v2 = calloc(1, sizeof(*v2));
+  v2->length = 4;
+  v2->data = calloc(v2->length, sizeof(*v2->data));
+
+  for (int i = 0; i < v2->length; i++) {
+    v2->data[i] = i;
   }
-    //printf("dotp: %d\n", dot_product(element_wise_prod));
-  
+  vector *element_wise_prod = element_wise_product(v2, v2);
+  /*for (int i = 0; i<element_wise_prod->length; i++) {
+    printf("%d", element_wise_prod->data[i]);
+    }*/
+  printf("\n");
+  printf("dotp: %d\n", dot_product(element_wise_prod));
+  printf("\n");
 }
 
     
