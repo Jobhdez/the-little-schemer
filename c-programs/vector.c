@@ -75,6 +75,10 @@ int eval_poly(poly *p1, int x) {
   return sum;
 }
 
+/*
+linear algebra (vectors)
+
+ */
   
 vector *add_vectors(vector *v1, vector *v2) {
   vector *result;
