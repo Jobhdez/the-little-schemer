@@ -75,7 +75,7 @@ poly *derivative(poly *p1) {
   p2->coefficients = malloc(p1->degree);
 
   int deg = p1->degree;
-  for (let i = 0; i < p1->degree + 1; i++) {
+  for (int i = 0; i < p1->degree + 1; i++) {
     p2->coefficients[i] = p1->coefficients[i] * deg;
     deg = deg - 1;
   }
@@ -150,13 +150,12 @@ vector *element_wise_product(vector *v1, vector *v2) {
 
   return element_wise;
 }
-int dot_product(vector *v1) {
-
-
+int dot_product(vector *inter_element_wise) {
+  
   int sum = 0;
   int inter;
-  for (int j = 0; j < v1->length; j++) {
-    inter = v1->data[j];
+  for (int j = 0; j < inter_element_wise->length; j++) {
+    inter = inter_element_wise->data[j];
     sum = sum + inter;
   }
 
