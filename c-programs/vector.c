@@ -92,6 +92,11 @@ int eval_poly(poly *p1, int x) {
   return sum;
 }
 
+void free_poly(poly *p) {
+  free(p->coefficients);
+  free(p);
+}
+
 /*
 linear algebra (vectors)
 
@@ -162,6 +167,10 @@ int dot_product(vector *inter_element_wise) {
   return sum;
 }
 
+void free_vector(vector *v) {
+  free(v->data);
+  free(v);
+}
 int print_vector(vector *v1) {
 
   if (v1->data) {
@@ -184,7 +193,12 @@ int main(void) {
   for (int j = 0; j < v1->length; j++) {
     printf("%d", result->data[j]);
     }
+  free(v1->data);
+  free(v1);
 
+  free(result->data);
+  //free(result);
+  
   printf("\n");
   printf("---------polynomials-------\n");
 
@@ -205,10 +219,13 @@ int main(void) {
     deg = deg - 1;
 
 }
+  free(result_poly->coefficients);
+  //free(result_poly);
   printf("\n");
   printf("---eval---\n");
   printf("eval: %d\n", eval_poly(p1, 2));
-  
+  free(p1->coefficients);
+  free(p1);
   //printf("\n");
   printf("----dot product----");
   vector *v2 = calloc(1, sizeof(*v2));
@@ -222,9 +239,13 @@ int main(void) {
   /*for (int i = 0; i<element_wise_prod->length; i++) {
     printf("%d", element_wise_prod->data[i]);
     }*/
+  free(v2->data);
+  free(v2);
   printf("\n");
   printf("dotp: %d\n", dot_product(element_wise_prod));
   printf("\n");
+
+  free(element_wise_prod->data);
 }
 
     
