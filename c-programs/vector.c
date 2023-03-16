@@ -19,6 +19,12 @@ typedef struct poly {
   int *coefficients;
 } poly;
 
+typedef struct matrix {
+  int rows;
+  int columns;
+  int **data;
+} matrix;
+
 /*
 basic Polynomials
 
@@ -167,6 +173,33 @@ int dot_product(vector *inter_element_wise) {
   return sum;
 }
 
+/* basic matrix algebra. */
+matrix *make_matrix(int rows, int columns) {
+  matrix *m = calloc(1, sizeof(*m));
+  m->rows = rows;
+  m->columns = columns;
+  m->data = calloc(m->rows, sizeof(*m->data)); // allocate memory for column array
+  for (int i = 0; i < m->rows; i++) {
+    m->data[i] = calloc(m->columns, sizeof(**m->data));
+  }
+
+  return m;
+}
+
+matrix *add_mat(matrix *m1, matrix *m2) {
+  int rows = m1->rows;
+  int columns = m1->columns;
+
+  matrix *m3 = make_matrix(rows, columns);
+
+  for (int i = 0; i < m3->rows; i++) {
+    for (int j = 0; j < m3->columns; j++) {
+      m3->data[i][j] = m1->data[i][j] + m2->data[i][j];
+    }
+  }
+  return m3;
+}
+		    
 void free_vector(vector *v) {
   free(v->data);
   free(v);
@@ -246,7 +279,24 @@ int main(void) {
   printf("\n");
 
   free(element_wise_prod->data);
-}
 
-    
-    
+  int rows = 2;
+  int columns = 3;
+  matrix *m1 = make_matrix(rows, columns);
+  int data = 1;
+  for (int i = 0; i < m1->rows; i++) {
+    for (int j = 0; j < m1->columns; j++) {
+      m1->data[i][j] = data;
+      data += 2;
+    }
+  }
+
+  matrix *m2 = add_mat(m1, m1);
+  for (int i = 0; i < m2->rows; i++) {
+    for (int j = 0; j < m2->columns; j++) {
+      printf("%d ", m2->data[i][j]);
+      printf("\t");
+    }
+    printf("\n");
+  }
+}
