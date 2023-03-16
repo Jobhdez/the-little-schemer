@@ -229,6 +229,24 @@ matrix *mul_scalar(matrix *m1, int scalar) {
   return m2;
 }
 
+// note: expects two square matrices
+matrix *mul_sq_matrix(matrix *m1, matrix *m2) {
+  int n = m1->rows;
+  matrix *m3 = make_matrix(m1->rows, m1->columns);
+
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      m3->data[i][j] = 0;
+      for (int k = 0; k < n; k++) {
+	m3->data[i][j] = m3->data[i][j] + m1->data[i][k] * m2->data[k][j];
+	}
+      }
+    }
+  return m3;
+}
+
+    
+	
 void print_matrix(matrix *m1) {
   for (int i = 0; i < m1->rows; i++) {
     for (int j = 0; j < m1->columns; j++) {
@@ -238,6 +256,16 @@ void print_matrix(matrix *m1) {
     printf("\n");
   }
 }
+
+void initialize_matrix(matrix *m1, int data) {
+  for (int i = 0; i < m1->rows; i++) {
+    for (int j = 0; j < m1->columns; j++) {
+      m1->data[i][j] = data;
+      data += 2;
+    }
+  }
+}
+  
 		    
 void free_vector(vector *v) {
   free(v->data);
@@ -358,4 +386,22 @@ int main(void) {
   printf("---print matrix * scalar-----");
   printf("\n");
   print_matrix(m4);
+
+  free(m3->data);
+  free(m3);
+  free(m4->data);
+
+  matrix *m5 = make_matrix(4,4);
+
+  initialize_matrix(m5, 2);
+  matrix *m6 = mul_sq_matrix(m5, m5);
+  printf("\n");
+  printf("----squared matrix multiplication.----\n");
+  print_matrix(m6);
+
+  free(m5->data);
+  free(m5);
+  free(m6->data);
+  
+  
 }
