@@ -213,6 +213,31 @@ matrix *sub_mat(matrix *m1, matrix *m2) {
   }
   return m3;
 }
+
+matrix *mul_scalar(matrix *m1, int scalar) {
+  int rows = m1->rows;
+  int columns = m1->columns;
+
+  matrix *m2 = make_matrix(rows, columns);
+
+  int i, j;
+  for (i = 0; i < rows; i++) {
+    for (j = 0; j < columns; j++) {
+      m2->data[i][j] = m1->data[i][j] * scalar;
+    }
+  }
+  return m2;
+}
+
+void print_matrix(matrix *m1) {
+  for (int i = 0; i < m1->rows; i++) {
+    for (int j = 0; j < m1->columns; j++) {
+      printf("%d ", m1->data[i][j]);
+      printf("\t");
+    }
+    printf("\n");
+  }
+}
 		    
 void free_vector(vector *v) {
   free(v->data);
@@ -313,4 +338,24 @@ int main(void) {
     }
     printf("\n");
   }
+
+  free(m1->data);
+  free(m1);
+  free(m2->data);
+  int rows2 = 2;
+  int columns2 = 3;
+  matrix *m3 = make_matrix(rows2, columns2);
+  int data2 = 1;
+  for (int i = 0; i < m3->rows; i++) {
+    for (int j = 0; j < m3->columns; j++) {
+      m3->data[i][j] = data2;
+      data2 += 2;
+    }
+  }
+  int scalar = 3;
+  matrix *m4 = mul_scalar(m3, scalar);
+  printf("\n");
+  printf("---print matrix * scalar-----");
+  printf("\n");
+  print_matrix(m4);
 }
