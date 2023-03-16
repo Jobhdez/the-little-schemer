@@ -199,6 +199,20 @@ matrix *add_mat(matrix *m1, matrix *m2) {
   }
   return m3;
 }
+
+matrix *sub_mat(matrix *m1, matrix *m2) {
+  int rows = m1->rows;
+  int columns = m1->columns;
+
+  matrix *m3 = make_matrix(rows, columns);
+
+  for (int i = 0; i < m3->rows; i++) {
+    for (int j = 0; j < m3->columns; j++) {
+      m3->data[i][j] = m1->data[i][j] + m2->data[i][j];
+    }
+  }
+  return m3;
+}
 		    
 void free_vector(vector *v) {
   free(v->data);
