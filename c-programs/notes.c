@@ -53,4 +53,13 @@ int **add_matrices(int m[2][4], int m2[2][4], int size) {
 }
 /* here in the above `**add_matrices` it returns
  a pointer that points to a pointer to m[2][4] ints; in this case it points to four ints */
-  
+ 
+// update
+// after further experience now it makes sense what ```poly *p1; p1->length = 3;``` by using `*` as a prefix it enables to access the object that it points to.
+// for example:
+int g = 3;
+int *j;
+j = &g;
+printf("%d", *j);
+
+// the above will print 3. `*j` is pointer to an int. `j=&g` means that j points to the adress of g. and int the print exp it access the object from the address that j points
