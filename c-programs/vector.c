@@ -35,12 +35,16 @@ basic Polynomials
 */
 
 poly *add_polys(poly *p1, poly *p2) {
-  // @param p1: poly
-  // @param p2: poly
-  // returns: p3, the polynomial sum of poly p1 and poly p2
-	
-  // adds two polynomials
-   poly *p3;
+  /*
+    @param p1: a Poly struct denoting a polynomial
+    @param p2: a Poly struct denoting a polynomial
+    @returns: p3, a Poly struct denoting a polynomial
+
+    returns the sum of both polynomials.
+
+   
+   */
+  poly *p3;
   int size = p1->degree + 1;
   
   p3->coefficients = malloc(size);
@@ -54,6 +58,16 @@ poly *add_polys(poly *p1, poly *p2) {
   return p3;
 }
 poly *sub_polys(poly *p1, poly *p2) {
+
+  /*
+    @param p1: a Poly struct denoting a polynomial
+    @param p2: a Poly struct denoting a polynomial
+    @returns: p3, a Poly struct denoting a polynomial
+
+    returns the subtraction of both polynomials.
+
+   
+   */
   poly *p3;
   int size = p1->degree + 1;
 
@@ -68,6 +82,16 @@ poly *sub_polys(poly *p1, poly *p2) {
 }
 
 poly *multiply_polys(poly *p1, poly *p2) {
+
+  /*
+    @param p1: a Poly struct denoting a polynomial
+    @param p2: a Poly struct denoting a polynomial
+    @returns: p3, a Poly struct denoting a polynomial
+
+    returns the product of both polynomials.
+
+   
+   */
   poly *p3;
   int p1_size = p1->degree + 1;
   int p2_size = p2->degree + 1;
@@ -85,6 +109,12 @@ poly *multiply_polys(poly *p1, poly *p2) {
 }
 
 poly *derivative(poly *p1) {
+  /*
+    @param p1: poly struct denoting a polynomial
+    @returns: poly struct denoting the derivative of p1
+
+    take the derivative of p1.
+  */
   poly *p2;
   p2->degree = p1->degree - 1;
   p2->coefficients = malloc(p1->degree);
@@ -98,6 +128,12 @@ poly *derivative(poly *p1) {
 }
   
 int eval_poly(poly *p1, int x) {
+  /*
+    @param p1: poly struct denoting a polynomial
+    @param x: integer
+    @returns: int, the evaluation of p1 with respect to x
+    
+   */
   int sum = 0;
   int inter;
   for (int i = 0; i < p1->degree+1; i++) {
@@ -118,6 +154,15 @@ linear algebra (vectors)
  */
   
 vector *add_vectors(vector *v1, vector *v2) {
+  /*
+    @param p1: a vector struct denoting a vector
+    @param p2: a vector struct denoting a vector
+    @returns: p3, a vector struct denoting a vector
+
+    returns the sum of both vector.
+
+   
+   */
   vector *result;
   result->data = malloc(v1->length);
   result->length = v1->length;
@@ -134,6 +179,18 @@ vector *add_vectors(vector *v1, vector *v2) {
 }
 
 vector *sub_vectors(vector *v1, vector *v2) {
+
+  /*
+
+    @param p1: a vector struct denoting a vector
+    @param p2: a vector struct denoting a vector
+    @returns: p3, a vector struct denoting a vector
+
+    returns the subtraction of both vector.
+
+
+
+   */
   vector *result;
   result->data = malloc(v1->length);
   result->length = v1->length;
@@ -149,6 +206,11 @@ vector *sub_vectors(vector *v1, vector *v2) {
 }
 
 vector *vec_mul_by_scalar(vector *v1, int scalar) {
+  /*
+    @param p1: a vector struct denoting a vector
+    @param p2: a scalar
+    @returns: p3, a vector struct denoting a vector * scalar
+  */
   vector *result;
   result->data = malloc(v1->length);
   result->length = v1->length;
@@ -160,6 +222,16 @@ vector *vec_mul_by_scalar(vector *v1, int scalar) {
   return result;
 }
 vector *element_wise_product(vector *v1, vector *v2) {
+  /*
+
+    @param v1: vector
+    @param v2: vector
+    @returns: vector
+
+    eg. {1,2,3,4} * {3,4,6,7} = {3,8,18,28}
+
+
+   */
   vector *element_wise;
   element_wise->data = malloc(v1->length);
   element_wise->length = v1->length;
@@ -171,7 +243,10 @@ vector *element_wise_product(vector *v1, vector *v2) {
   return element_wise;
 }
 int dot_product(vector *inter_element_wise) {
-  
+  /*
+    assumes an element wise product of the two vectors that get multiplied.
+
+   */
   int sum = 0;
   int inter;
   for (int j = 0; j < inter_element_wise->length; j++) {
@@ -184,6 +259,9 @@ int dot_product(vector *inter_element_wise) {
 
 /* basic matrix algebra. */
 matrix *make_matrix(int rows, int columns) {
+  /*
+    make a matrix given two ints: rows, and columns
+  */
   matrix *m = calloc(1, sizeof(*m));
   m->rows = rows;
   m->columns = columns;
@@ -196,6 +274,11 @@ matrix *make_matrix(int rows, int columns) {
 }
 
 matrix *add_mat(matrix *m1, matrix *m2) {
+
+  /*
+    add matrixes m1 and m2.
+    
+   */
   int rows = m1->rows;
   int columns = m1->columns;
 
@@ -210,6 +293,7 @@ matrix *add_mat(matrix *m1, matrix *m2) {
 }
 
 matrix *sub_mat(matrix *m1, matrix *m2) {
+  /* subtract matrixes m1 and m2*/
   int rows = m1->rows;
   int columns = m1->columns;
 
@@ -224,6 +308,9 @@ matrix *sub_mat(matrix *m1, matrix *m2) {
 }
 
 matrix *mul_scalar(matrix *m1, int scalar) {
+
+  /* multiply `scalar` by the matrix m1*/
+  
   int rows = m1->rows;
   int columns = m1->columns;
 
@@ -240,6 +327,7 @@ matrix *mul_scalar(matrix *m1, int scalar) {
 
 // note: expects two square matrices
 matrix *mul_sq_matrix(matrix *m1, matrix *m2) {
+  /* given two *square* matrixes m1 and m2 multiply them*/
   int n = m1->rows;
   matrix *m3 = make_matrix(m1->rows, m1->columns);
 
