@@ -281,6 +281,8 @@ int print_vector(vector *v1) {
   free(v1->data);
 }
 
+// tests :)
+//------------------------
 int main(void) {
   vector *v1 = calloc(1, sizeof(*v1));
   v1->length = 4;
