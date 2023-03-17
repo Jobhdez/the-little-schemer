@@ -8,6 +8,10 @@ happy programming!
 
 */
 
+/*
+math structures
+
+*/
 
 typedef struct vector {
   int length;
@@ -31,7 +35,12 @@ basic Polynomials
 */
 
 poly *add_polys(poly *p1, poly *p2) {
-  poly *p3;
+  // @param p1: poly
+  // @param p2: poly
+  // returns: p3, the polynomial sum of poly p1 and poly p2
+	
+  // adds two polynomials
+   poly *p3;
   int size = p1->degree + 1;
   
   p3->coefficients = malloc(size);
