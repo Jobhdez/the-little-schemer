@@ -342,8 +342,48 @@ matrix *mul_sq_matrix(matrix *m1, matrix *m2) {
   return m3;
 }
 
-    
-	
+/* matrix-vector operations. */
+
+matrix *mat_vec_prod_helper(matrix *m1, vector *v1) {
+
+  int rows = m1->rows;
+  matrix *m2 = make_matrix(rows, m1->columns);
+  
+  for (int i = 0; i < rows; i++) {
+    for (int j = 0; j < m1->columns; j++) {
+      for (int k = 0; k < v1->length; k++) {
+	m2->data[i][j] = m1->data[i][j] * v1->data[k];
+      }
+    }
+  }
+  /*
+  int sum;
+  for (int i = 0; i < m4->rows; i++) {
+    sum = 0;
+    for (int j = 0; j < m4->columns; j++) {
+      sum = sum + m4->data[i][j];
+      result->data[i] = sum;
+    }
+    }*/
+  return m2;
+}
+
+vector *mat_vec_prod(matrix *m1) {
+  vector *result;
+  result->data = malloc(m1->rows);
+  result->length = m1->rows;
+
+  int sum;
+  for (int i = 0; i < m1->rows; i++) {
+    sum = 0;
+    for (int j = 0; j < m1->columns; j++) {
+      sum = sum + m1->data[i][j];
+    }
+    result->data[i] = sum;
+  }
+
+  return result;
+}
 void print_matrix(matrix *m1) {
   for (int i = 0; i < m1->rows; i++) {
     for (int j = 0; j < m1->columns; j++) {
@@ -358,7 +398,7 @@ void initialize_matrix(matrix *m1, int data) {
   for (int i = 0; i < m1->rows; i++) {
     for (int j = 0; j < m1->columns; j++) {
       m1->data[i][j] = data;
-      data += 2;
+      data += 1;
     }
   }
 }
@@ -502,5 +542,35 @@ int main(void) {
   free(m5);
   free(m6->data);
   
-  
+  printf("\n");
+  printf("------matrix-vector product.------------");
+  matrix *m7 = make_matrix(2,3);
+
+  // initialize to {{1,2,3} {4,5,6}}
+  initialize_matrix(m7, 1);
+
+  // initialize vector to {1,2,3}
+  vector *v5 = calloc(1, sizeof(*v5));
+  v5->length = 3;
+  v5->data = calloc(v5->length, sizeof(*v5->data));
+  int integer2 = 1;
+  for (int i = 0; i < v5->length; i++) {
+    v5->data[i] = integer2;
+    integer2+=1;
+  }
+
+  // print vector
+  matrix *m8 = mat_vec_prod_helper(m7, v5);
+  printf("\n");
+  print_matrix(m8);
+  printf("%d\n", m8->rows);
+  printf("%d\n", m8->columns);
+
+  /* cause of segmentation fault error.*/
+  vector *v6 = mat_vec_prod(m8);
+
+  printf("\n");
+  for (int i = 0; i < v6->length; i++) {
+    printf("%d\n", v6->data[i]);
+  }
 }
