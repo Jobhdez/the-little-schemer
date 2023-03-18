@@ -344,10 +344,13 @@ matrix *mul_sq_matrix(matrix *m1, matrix *m2) {
 
 /* matrix-vector operations. */
 
-matrix *mat_vec_prod_helper(matrix *m1, vector *v1) {
+vector *mat_vec_prod(matrix *m1, vector *v1) {
 
   int rows = m1->rows;
   matrix *m2 = make_matrix(rows, m1->columns);
+  vector *v2 = calloc(1, sizeof(*v2));
+  v2->length = m1->rows;
+  v2->data = malloc(m1->rows);
   
   for (int i = 0; i < rows; i++) {
     for (int j = 0; j < m1->columns; j++) {
@@ -356,35 +359,18 @@ matrix *mat_vec_prod_helper(matrix *m1, vector *v1) {
       }
     }
   }
-  /*
-  int sum;
-  for (int i = 0; i < m4->rows; i++) {
-    sum = 0;
-    for (int j = 0; j < m4->columns; j++) {
-      sum = sum + m4->data[i][j];
-      result->data[i] = sum;
-    }
-    }*/
-  return m2;
-}
-
-vector *mat_vec_prod(matrix *m1) {
   
-  vector *v1 = calloc(1, sizeof(*v1));
-  v1->length = m1->rows;
-  v1->data = malloc(m1->rows);
-
   int sum;
-  for (int i = 0; i < m1->rows; i++) {
+  for (int i = 0; i < m2->rows; i++) {
     sum = 0;
-    for (int j = 0; j < m1->columns; j++) {
-      sum = sum + m1->data[i][j];
+    for (int j = 0; j < m2->columns; j++) {
+      sum = sum + m2->data[i][j];
     }
-    v1->data[i] = sum;
-  }
-
-  return v1;
+    v2->data[i] = sum;
+    }
+  return v2;
 }
+
 void print_matrix(matrix *m1) {
   for (int i = 0; i < m1->rows; i++) {
     for (int j = 0; j < m1->columns; j++) {
@@ -560,15 +546,8 @@ int main(void) {
     integer2+=1;
   }
 
-  // print vector
-  matrix *m8 = mat_vec_prod_helper(m7, v5);
-  printf("\n");
-  print_matrix(m8);
-  printf("%d\n", m8->rows);
-  printf("%d\n", m8->columns);
-
   /* cause of segmentation fault error.*/
-  vector *v6 = mat_vec_prod(m8);
+  vector *v6 = mat_vec_prod(m7, v5);
 
   printf("\n");
   for (int i = 0; i < v6->length; i++) {
