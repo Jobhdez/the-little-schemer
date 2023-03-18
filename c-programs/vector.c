@@ -369,9 +369,10 @@ matrix *mat_vec_prod_helper(matrix *m1, vector *v1) {
 }
 
 vector *mat_vec_prod(matrix *m1) {
-  vector *result;
-  result->data = malloc(m1->rows);
-  result->length = m1->rows;
+  
+  vector *v1 = calloc(1, sizeof(*v1));
+  v1->length = m1->rows;
+  v1->data = malloc(m1->rows);
 
   int sum;
   for (int i = 0; i < m1->rows; i++) {
@@ -379,10 +380,10 @@ vector *mat_vec_prod(matrix *m1) {
     for (int j = 0; j < m1->columns; j++) {
       sum = sum + m1->data[i][j];
     }
-    result->data[i] = sum;
+    v1->data[i] = sum;
   }
 
-  return result;
+  return v1;
 }
 void print_matrix(matrix *m1) {
   for (int i = 0; i < m1->rows; i++) {
@@ -573,4 +574,5 @@ int main(void) {
   for (int i = 0; i < v6->length; i++) {
     printf("%d\n", v6->data[i]);
   }
+  
 }
