@@ -405,7 +405,9 @@ int print_vector(vector *v1) {
   free(v1->data);
 }
 
+//----------------------------
 // tests :)
+// the following is how I experimented with the code I wrote above to make sure I was doing it right.
 //------------------------
 int main(void) {
   vector *v1 = calloc(1, sizeof(*v1));
