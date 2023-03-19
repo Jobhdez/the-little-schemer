@@ -142,10 +142,6 @@ int eval_poly(poly *p1, int x) {
   return sum;
 }
 
-void free_poly(poly *p) {
-  free(p->coefficients);
-  free(p);
-}
 
 //*******************************
 //  Basic Vector arithmetic
@@ -377,6 +373,11 @@ vector *mat_vec_prod(matrix *m1, vector *v1) {
 // utils
 //*******************************
 
+void free_poly(poly *p) {
+  free(p->coefficients);
+  free(p);
+}
+
 void print_matrix(matrix *m1) {
   for (int i = 0; i < m1->rows; i++) {
     for (int j = 0; j < m1->columns; j++) {
@@ -405,7 +406,7 @@ int print_vector(vector *v1) {
 
   if (v1->data) {
     for (int i = 0; i < v1->length; i++) {
-      printf("%d", v1->data[i]);
+      printf("%d\t", v1->data[i]);
     }
   }
   free(v1->data);
@@ -556,7 +557,6 @@ int main(void) {
     integer2+=1;
   }
 
-  /* cause of segmentation fault error.*/
   vector *v6 = mat_vec_prod(m7, v5);
 
   printf("\n");
