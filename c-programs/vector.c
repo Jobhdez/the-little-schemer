@@ -8,10 +8,10 @@ happy programming!
 
 */
 
-/*
-math structures
+//*******************************
+// math structures
+//*******************************
 
-*/
 
 typedef struct vector {
   int length;
@@ -29,10 +29,9 @@ typedef struct matrix {
   int **data;
 } matrix;
 
-/*
-basic Polynomials
-
-*/
+//*******************************
+// basic Polynomial arithmetic
+//*******************************
 
 poly *add_polys(poly *p1, poly *p2) {
   /*
@@ -148,10 +147,9 @@ void free_poly(poly *p) {
   free(p);
 }
 
-/*
-linear algebra (vectors)
-
- */
+//*******************************
+//  Basic Vector arithmetic
+//*******************************
   
 vector *add_vectors(vector *v1, vector *v2) {
   /*
@@ -257,7 +255,9 @@ int dot_product(vector *inter_element_wise) {
   return sum;
 }
 
-/* basic matrix algebra. */
+//*******************************
+// basic matrix arithmetic
+//*******************************
 matrix *make_matrix(int rows, int columns) {
   /*
     make a matrix given two ints: rows, and columns
@@ -342,7 +342,9 @@ matrix *mul_sq_matrix(matrix *m1, matrix *m2) {
   return m3;
 }
 
-/* matrix-vector operations. */
+//*******************************
+// basic matrix-vector arithmetic
+//*******************************
 
 vector *mat_vec_prod(matrix *m1, vector *v1) {
 
@@ -370,6 +372,10 @@ vector *mat_vec_prod(matrix *m1, vector *v1) {
     }
   return v2;
 }
+
+//*******************************
+// utils
+//*******************************
 
 void print_matrix(matrix *m1) {
   for (int i = 0; i < m1->rows; i++) {
@@ -405,10 +411,12 @@ int print_vector(vector *v1) {
   free(v1->data);
 }
 
-//----------------------------
-// tests :)
-// the following is how I experimented with the code I wrote above to make sure I was doing it right.
-//------------------------
+//*******************************
+// test the code, no formal tests
+// yet; just want to make sure
+// the code works as I am writing
+// it.
+//*******************************
 int main(void) {
   vector *v1 = calloc(1, sizeof(*v1));
   v1->length = 4;
