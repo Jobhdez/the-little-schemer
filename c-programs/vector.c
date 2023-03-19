@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/*
-this is a just an experiment to try c out so I didnt write any comments :)
-
-happy programming!
-
-*/
+//*******************************
+// this program is just a quick 
+// experiment to learn c.
+// happy programming! :)
+// --- Job Hernandez 
+//*******************************
 
 //*******************************
 // math structures
