@@ -1,8 +1,8 @@
-output: hello.o printf.o runtime2.o simple_addition.s print_exit_code.sh
+output: hello.o printf.o runtime2.o simple_addition.s complex_addition.s
 	ld hello.o -o hello
 	gcc -static -o printf printf.o
-	gcc -g runtime2.o simple_addition.s && ./a.out
-	bash print_exit_code.sh
+	gcc -g runtime2.o simple_addition.s
+	gcc -g -o complex runtime2.o complex_addition.s
 
 hello.o: hello.asm
 	nasm -felf64 hello.asm
