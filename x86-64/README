@@ -1,8 +1,9 @@
 to run `printf.asm`:
+
       nasm -felf64 printf.asm
       gcc -static -o prinf printf.o
       ./printf
-<<<<<<< HEAD
+
          note:
           we need a library that supports `printf` so we use gcc to link the          given library with `printf` with the object file. this means
 	  that we might not need to write a runtime for now for your
@@ -14,8 +15,5 @@ the operating system so to see the output you need to see the exit code;
 the bash script takes care of this; it contains:
 
     	 	echo $?
-=======
-             note:
-             we need a library that supports `printf` so we use gcc to link the given library with `printf` with the object file. this means
-	     that we might not need to write a runtime for now for my compiler project:)
->>>>>>> 6a1c9cba43cdd944cbed4319ecdaf746a27fc877
+
+         
