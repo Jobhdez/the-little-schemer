@@ -5,7 +5,7 @@ to run `printf.asm`:
       ./printf
 
          note:
-          we need a library that supports `printf` so we use gcc to link the          given library with `printf` with the object file. this means
+          we need a library that supports `printf` so we use gcc to link the given library with `printf` with the object file. this means
 	  that we might not need to write a runtime for now for your
 	  compiler project:
 
