@@ -4,6 +4,7 @@ output: hello.o printf.o runtime2.o simple_addition.s complex_addition.s
 	gcc -g runtime2.o simple_addition.s
 	gcc -g -o complex runtime2.o complex_addition.s
 
+
 hello.o: hello.asm
 	nasm -felf64 hello.asm
 
@@ -14,4 +15,4 @@ runtime2.o: runtime2.c
 	gcc -c -g -std=c99 runtime2.c
 
 clean:
-	rm *.o hello printf *.out
+	rm *.o hello printf *.out pycompiler_generated_assembly/*.out
