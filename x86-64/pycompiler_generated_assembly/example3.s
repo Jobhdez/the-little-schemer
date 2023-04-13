@@ -1,3 +1,14 @@
+	/*
+	this assembly corresponds to the following python program:
+
+	x = 10 + -3
+	y = 2
+	z = x + y
+	print(z)
+
+
+	*/
+
 	.globl main
 
 main:
