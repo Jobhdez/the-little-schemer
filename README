@@ -5,7 +5,7 @@
 
 #### this repo contains some learning sessions:
 
-###  haskell, c, and racket programs
+###  haskell, c, x86-64 and racket programs
 
 quick exercises to learn  Haskell, C and Racket programs;
 
@@ -17,6 +17,7 @@ e.g., In C I wrote a little basic linear algebra system. you cant return arrays 
 e.g., 3/17: in c im rewrote the basic linear algebra library but this time I used `typedef struct` - grasped the basics of pointers and memory allocation 
 by working on this.
 
+Eg. In assembly I've written really tiny stuff; recently I've been writing the corresponding assembly for a few small python programs.
 to understand pointers check this stackoverflow answer:
 
 https://stackoverflow.com/questions/33746434/double-pointer-vs-array-of-pointersarray-vs-array
