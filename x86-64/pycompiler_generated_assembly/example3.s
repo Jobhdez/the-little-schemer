@@ -5,8 +5,11 @@
 	y = 2
 	z = x + y
 	print(z)
-
-
+        ->
+	temp1 = -3
+	x = 10 + temp1
+	y = 2
+	z = x+y
 	*/
 
 	.globl main
