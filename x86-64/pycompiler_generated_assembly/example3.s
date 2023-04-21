@@ -10,8 +10,15 @@
 	x = 10 + temp1
 	y = 2
 	z = x+y
-	*/
-
+	->
+	movq $3, temp1
+	subq temp1
+	movq $10, x
+	addq temp1, x
+	movq $2, y
+	movq x, z
+	addq y, z
+	
 	.globl main
 
 main:
