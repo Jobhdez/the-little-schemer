@@ -4,6 +4,17 @@
 
 	x = 50 + -10
 	print(x + 10)
+	->
+	temp1 = -10
+	x = 50 + temp1
+	temp2 = x + 10
+	->
+	movq $10, temp1
+	negq temp1
+	movq $50, x
+	addq temp1, x
+	movq x, temp2
+	addq $10, temp2
 
 
 	*/
