@@ -1,0 +1,18 @@
+#lang racket
+
+(define (diff-compile exp)
+  (match exp
+    [(diff (addition 'x n))
+     (let* ((exp1 (diff-compile-var 'x))
+            (exp2 (diff-compile-int n)))
+       (string-append "poly e1 =" "*derivative(" (number->string 1 ")" "+" "*derivative(" exp2 ")"))]
+    [(diff (subtraction 'x n))
+     (let* ((exp1 (diff-compile-var 'x))
+            (exp2 (diff-compile-int n)))
+       (string-append "poly e1 = " "*derivative(" exp1 ")" "-" "*derivative(" exp2 ")"))]
+    [(diff (multiplication 'x n))
+     (let* ((exp1 (diff-compile-var 'x))
+            (exp2 (diff-compile-int n)))
+       (string-append "poly e1 = " "*derivative(" exp2 ")" "*" exp1 ";\n"
+                      "poly e2 =" "*derivative(" exp1 ")" "*" exp2))]))
+
