@@ -42,9 +42,13 @@ def print_data():
     plt.ylabel("hours studied")
     plt.title("Hours spent stdying")
     plt.show()
+
 ###------------------------
 
 def print_stat_data():
     s = pd.Series(hours)
     stat_data = dict(s.describe())
     return stat_data
+
+print_stat_data()
+##-> {'count': 28.0, 'mean': 43.714285714285715, 'std': 19.428610332983144, 'min': 14.0, '25%': 27.75, '50%': 44.0, '75%': 51.25, 'max': 84.0}
