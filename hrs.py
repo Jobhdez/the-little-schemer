@@ -31,6 +31,8 @@ data = {'jan21': 72,
         'march23': 28,
         'apr23': 21}
 
+hours_per_year = {'2021': 630, '2022': 453}
+
 months = list(data.keys())
 hours = list(data.values())
 
