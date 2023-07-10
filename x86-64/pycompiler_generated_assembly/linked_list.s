@@ -1,4 +1,9 @@
 	/*
+	this example is taken from here: https://www.cs.uaf.edu/2015/fall/cs301/lecture/09_25_structs.html
+
+	---------
+	c code of a linked list
+	-------------
 struct linked_list {
 	long id; // the data in this link: one student ID
 	struct linked_list *next; // the next node, or NULL if none
