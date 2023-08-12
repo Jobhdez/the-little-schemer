@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-
+## 2021: 630 hours
 data = {'jan21': 72,
         'feb21': 80,
         'march21': 50,
