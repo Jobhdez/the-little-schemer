@@ -22,7 +22,7 @@ main:
 	jmp block_2
 
 block_1:
-        /movq $5, -8(%rbp)
+        movq $5, -8(%rbp)
         negq -8(%rbp)
         movq -8(%rbp), %rax 
         movq $50, -16(%rbp)
@@ -34,7 +34,7 @@ block_1:
 	retq
 
 block_2:
-	/movq $10, -8(%rbp)
+	movq $10, -8(%rbp)
         negq -8(%rbp)
         movq -8(%rbp), %rax 
         movq $30, -16(%rbp)
