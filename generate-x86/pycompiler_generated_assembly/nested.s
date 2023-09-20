@@ -37,19 +37,6 @@ def test(x y):
  #S(CALLQ :LABEL "print_int") #S(BLOCK-PY :NAME "test:")
  #S(INSTRUCTION :NAME "cmpq" :ARG1 #S(IMMEDIATE :INT 20) :ARG2 "-8(%rbp)"))
 
-update:
-def test(x y):
-	n = 10
-	x=0
-   while x < 20:
-      if x < n:
-         j = 10 + -3
-	print(j+10)
-	x = x + 1
-      else:
-         j = 10 + -6
-	print(j + 3)
-	x = x + 1;;
       
 	*/
 
