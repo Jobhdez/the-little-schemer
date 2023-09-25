@@ -9,8 +9,8 @@ def test(x y):
 	 print(j+10)
       else:
          j = 10 + -6
-	print(j + 3);;
-      x = x + 1
+	 print(j + 3);;
+         x = x + 1
 (#S(INSTRUCTION :NAME "movq" :ARG1 "rdi" :ARG2 "-8(%rbp)")
  #S(INSTRUCTION :NAME "movq" :ARG1 "rsi" :ARG2 "-16(%rbp)")
  #S(INSTRUCTION :NAME "movq" :ARG1 #S(IMMEDIATE :INT 10) :ARG2 "-24(%rbp)")
