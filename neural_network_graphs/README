@@ -1,0 +1,3 @@
+* dependencies
+you need the module `transformers` from huggingface and pytorch :-)
+
