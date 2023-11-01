@@ -1,0 +1,7 @@
+to setup github ssh type the following in your ~/.ssh/config file:
+
+```
+Host github.com
+ Hostname ssh.github.com
+ Port 443
+```
