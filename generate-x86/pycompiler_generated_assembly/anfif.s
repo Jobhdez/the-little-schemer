@@ -20,9 +20,6 @@ false_value:
 	.section .text
 	.globl main
 main:
-	pushq %rbp
-	movq %rsp, %rbp
-	subq $16, %rsp
         movq true_value(%rip), %rax   
         cmpq $0, %rax            
         je false_branch          
@@ -67,8 +64,6 @@ block_6:
 end_program:
 	movq %r14, %rdi
 	callq print_int
-	addq $16, %rsp
-	popq %rbp
 	retq
 	
 
