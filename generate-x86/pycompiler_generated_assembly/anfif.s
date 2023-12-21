@@ -20,23 +20,55 @@ false_value:
 	.section .text
 	.globl main
 main:
-    movq true_value(%rip), %rax   
-    cmpq $1, %rax            
-    je false_branch          
+	pushq %rbp
+	movq %rsp, %rbp
+	subq $16, %rsp
+        movq true_value(%rip), %rax   
+        cmpq $0, %rax            
+        je false_branch          
 
 true_branch:
 
-    movq $3, %r14
+    movq true_value(%rip), %r15
   
-    jmp end_program
+    jmp block_1
 
 false_branch:
-	movq $5, %r14
+	movq false_value(%rip), %r15
+	jmp block_1
+
+block_1:
+	cmpq $1, %r15
+	je block_2
+	jmp block_3
+
+block_2:
+	movq false_value(%rip), %r13
+	jmp block_4
+
+block_3:
+	movq true_value(%rip), %r13
+	jmp block_4
+
+block_4:
+	cmpq $1, %r13
+	je block_5
+	jmp block_6
+
+block_5:
+	movq $1, %r14
 	jmp end_program
+
+block_6:
+	movq $3, %r14
+	jmp end_program
+	
 
 end_program:
 	movq %r14, %rdi
 	callq print_int
+	addq $16, %rsp
+	popq %rbp
 	retq
 	
 
