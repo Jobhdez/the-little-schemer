@@ -8,8 +8,8 @@
   (atomic (py-id "temp-1"))
   (anf-if-exp (atomic (py-id "temp_0")) (atomic (py-bool 'False)) (atomic (py-bool 'True))))
  (anf-if-exp (atomic (py-id "temp-1")) (atomic (py-num 1)) (atomic (py-num 3))))
-	to-anf.rkt>
-	if (if (if true then true else true) then false else true) then 1 else 3
+
+if (if (if true then true else true) then false else true) then 1 else 3
 	*/
 	.section .data
 true_value:
