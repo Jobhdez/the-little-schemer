@@ -1,8 +1,8 @@
 
 	.section .data
 matrix:
-    .quad 2, 3
-    .quad 5, 6
+	.quad 2, 3
+	.quad 5, 6
 m_2:
 	.quad 1, 3
 	.quad 2, 3
@@ -18,14 +18,14 @@ main:
         jmp test
 
 test:
-    cmpq $2, %r13
-    jne test_2
-    jmp exit
+	cmpq $2, %r13
+	jne test_2
+	jmp exit
 
 test_2:
-    cmpq $2, %r14
-    jne body
-    jmp body_2
+	cmpq $2, %r14
+	jne body
+	jmp body_2
 
 body:
 	leaq (%r14, %r13, 2), %rax 
@@ -39,9 +39,9 @@ body:
         jmp test_2
 
 body_2:
-    incq %r13
-    movq $0, %r14
-    jmp test
+	incq %r13
+	movq $0, %r14
+	jmp test
 
 exit:
-    retq
+	retq
