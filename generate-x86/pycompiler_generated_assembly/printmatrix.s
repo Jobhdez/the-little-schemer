@@ -23,7 +23,7 @@ test_2:
 	jmp body_2
 
 body:
-	leaq (%r14, %r13, 2), %rax  /* Corrected index order */
+	leaq (%r14, %r13, 2), %rax  
 	leaq (%r15, %rax, 8), %rdx
 	movq (%rdx), %rdi
 	callq print_int
