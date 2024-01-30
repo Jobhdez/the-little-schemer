@@ -2,3 +2,9 @@
 == the little schemer ==
 
 I started this repo to practice some skills in C and Assembly and Haskell.
+
+== the `generate-x86` directory ==
+this directory contains a directory containing x86-64 assembly programs written in AT&T synstax; some of the projects I work on are compilers so the reason why I write these assembly programs is to be able to generate the correct assembly in my compilers.
+at least some of these programs can be compiled with gcc using `runtime.o`:
+
+                            gcc -g runtime2.o <assembly_program.s>
