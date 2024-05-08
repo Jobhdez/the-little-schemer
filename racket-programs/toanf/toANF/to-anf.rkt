@@ -12,7 +12,7 @@
 ;;; this module takes the AST for the parse tree and turns it into
 ;;; a-normal-form.
 ;;;
-;;; Examples:
+;;; Examples
 ;;;     x = 10 + -50
 ;;;     y = 4 + -60
 ;;;     z = 4 + 5
