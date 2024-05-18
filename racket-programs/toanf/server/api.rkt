@@ -17,9 +17,9 @@
     (curry get-hash-value (parse-json-body req)))
   (define expr (get-property 'exp))
   (define ast (parse-expression expr))
-  (define anf (struct->list (car  (syntax->anf ast))))
+  (define anf (list (syntax->anf ast)))
   (response/jsexpr
-   (hasheq 'exp anf)))
+   (hasheq 'exp (format "~a" (car (syntax->anf ast))))))
 
 (define-values (dispatch req)
   (dispatch-rules
