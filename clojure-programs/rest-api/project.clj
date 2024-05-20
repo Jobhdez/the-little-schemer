@@ -8,7 +8,10 @@
                  [http-kit "2.3.0"]
                  [ring/ring-defaults "0.3.4"]
                  [org.clojure/data.json "2.4.0"]
-                 [cheshire "5.13.0"]]
+                 [cheshire "5.13.0"]
+                 [com.github.seancorfield/next.jdbc "1.3.834"]
+                 [org.postgresql/postgresql "42.2.10"]
+                 [com.github.seancorfield/honeysql "2.3.928"]]
   :main ^:skip-aot rest-api.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all
