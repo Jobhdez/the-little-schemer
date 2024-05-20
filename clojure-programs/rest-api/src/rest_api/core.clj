@@ -5,11 +5,19 @@
             [clojure.string :as str]
             [clojure.data.json :as json]
             [compojure.core :refer [defroutes GET POST PUT DELETE]]
-            [ring.middleware.defaults :refer [wrap-defaults site-defaults]])
+            [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
+            [next.jdbc :as jdbc])
     (:gen-class))
 
 (def users-collection (atom []))
 (def id-counter (atom 0))
+(def db-config
+  {:dbtype "postgresql"
+   :dbname "clojuredb"
+   :host "localhost"
+   :user "postgres"
+   :password "postgres"})
+(def db (jdbc/get-datasource db-config))
 
 (defn adduser [firstname surname city]
   (swap! id-counter inc)
@@ -30,7 +38,6 @@
 (defn adduser-handler [req]
   (let [body (slurp (:body req))
         body-params (parse-string body true)]
-        
     (println "body" body)
     (println "body-params" body-params)
         {:status  200
@@ -38,9 +45,11 @@
          :body    (-> (let [firstname (body-params :firstname)
                             surname (body-params :surname)
                             city (body-params :city)]
-                        (adduser firstname surname city)
-                        (str (json/write-str @users-collection))))}))
-
+                       (def strng   (format "insert into person (name, surname, city) values('%s', '%s', '%s')" firstname surname city))
+                        
+    (jdbc/execute! db
+                   [strng])
+                        (str (json/write-str {:firstname firstname :surname surname :city city}))))}))
 (defn add-handler [req]
   (let [body (slurp (:body req))
         body-params (parse-string body true)]
@@ -90,8 +99,14 @@
      :headers {"Content-Type" "text/json"}
      :body (json/write-str @users-collection)}))
 
+(defn get-users [req]
+  (let [users (jdbc/execute! db ["select * from person"])]
+    {:status 200
+     :headers {"Content-Type" "text/json"}
+     :body (json/write-str users)}))
+
 (defroutes app-routes
-  (GET "/users" [] user-handler)
+  (GET "/users" [] get-users)
   (GET "/users/addn" [] add-n)
   (POST "/users/add" [] adduser-handler)
   (POST "/users/addxy" [] add-handler)
