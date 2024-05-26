@@ -45,11 +45,10 @@
          :body    (-> (let [firstname (body-params :firstname)
                             surname (body-params :surname)
                             city (body-params :city)]
-                       (def strng   (format "insert into person (name, surname, city) values('%s', '%s', '%s')" firstname surname city))
-                        
-    (jdbc/execute! db
-                   [strng])
-                        (str (json/write-str {:firstname firstname :surname surname :city city}))))}))
+                        (let [db-exp (format "insert into person (name, surname, city) values('%s', '%s', '%s')" firstname surname city)]
+                          (jdbc/execute! db [db-str])
+                          (str (json/write-str {:firstname firstname :surname surname :city city})))))}))
+
 (defn add-handler [req]
   (let [body (slurp (:body req))
         body-params (parse-string body true)]
