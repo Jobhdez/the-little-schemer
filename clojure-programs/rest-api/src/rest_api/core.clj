@@ -119,4 +119,4 @@
      (-> app-routes
          (wrap-defaults (assoc-in site-defaults [:security :anti-forgery] false)))
      {:port port})
-    (println (str "Webserver started at http:/127.0.0.1:" port "/"))))
+    (println (str "Webserver started at http://127.0.0.1:" port "/"))))
