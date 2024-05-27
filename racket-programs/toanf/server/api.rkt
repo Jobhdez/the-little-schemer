@@ -3,7 +3,14 @@
 (require web-server/servlet)
 (require web-server/servlet-env)
 (require "../parser/pyparser.rkt"
-         "../toANF/to-anf.rkt")
+         "../toANF/to-anf.rkt"
+         "database.rkt")
+(require racket/list
+         racket/string
+         racket/class
+         racquel
+         db)
+
 (require racket/struct)
 
 (define (parse-json-body req)
@@ -15,15 +22,23 @@
 (define (post-values req)
   (define get-property
     (curry get-hash-value (parse-json-body req)))
-  (define expr (get-property 'exp))
+  (define expr (get-property 'input-exp))
   (define ast (parse-expression expr))
-  (define anf (list (syntax->anf ast)))
+  (define anf (format "~a" (car (syntax->anf ast))))
+  (query-exec the-db (format "insert into a_normal_forms(input_exp, ast, anf_exp) values ('~a', '~a', '~a')" expr ast anf))
   (response/jsexpr
-   (hasheq 'exp (format "~a" (car (syntax->anf ast))))))
+   (hasheq 'exp anf)))
+
+(define (view-expression req pid)
+  (define e (query-rows the-db (format "select * from a_normal_forms where id = ~a" pid)))
+  (define jse (map vector->list e))
+  (response/jsexpr
+   (hasheq 'exp jse)))
 
 (define-values (dispatch req)
   (dispatch-rules
-   [("anfexps") #:method "post" post-values]))
+   [("anfexps") #:method "post" post-values]
+   [("anfexps" (integer-arg)) #:method "get" view-expression]))
 
 (serve/servlet
  (lambda (req) (dispatch req))
