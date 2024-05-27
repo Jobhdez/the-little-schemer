@@ -31,14 +31,32 @@
 
 (define (view-expression req pid)
   (define e (query-rows the-db (format "select * from a_normal_forms where id = ~a" pid)))
-  (define jse (map vector->list e))
+  (define data-list (car (map vector->list e)))
   (response/jsexpr
-   (hasheq 'exp jse)))
+   (hasheq 'exp (hasheq 'id (first data-list)
+                        'input-exp (second data-list)
+                        'ast (third data-list)
+                        'anf (fourth data-list)))))
+
+
+
+(define (get-anf-exps req)
+  (define data (query-rows the-db (format "select * from a_normal_forms")))
+  (define data-list (map vector->list data))
+  (define data-hash (map (lambda (row) (hasheq 'id (first row)
+                                               'exp (second row)
+                                               'ast (third row)
+                                               'anf (fourth row)))
+                         data-list))
+    
+  (response/jsexpr
+   (hasheq 'exp data-hash)))
 
 (define-values (dispatch req)
   (dispatch-rules
    [("anfexps") #:method "post" post-values]
-   [("anfexps" (integer-arg)) #:method "get" view-expression]))
+   [("anfexps" (integer-arg)) #:method "get" view-expression]
+   [("anfexps") #:method "get" get-anf-exps]))
 
 (serve/servlet
  (lambda (req) (dispatch req))
