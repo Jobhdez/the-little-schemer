@@ -6,3 +6,4 @@ __pycache__/
 my_productivity/__pycache__/
 my_productivity/work/
 *.o
+*.env 
