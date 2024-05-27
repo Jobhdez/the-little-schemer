@@ -46,7 +46,7 @@
                             surname (body-params :surname)
                             city (body-params :city)]
                         (let [db-exp (format "insert into person (name, surname, city) values('%s', '%s', '%s')" firstname surname city)]
-                          (jdbc/execute! db [db-str])
+                          (jdbc/execute! db [db-exp])
                           (str (json/write-str {:firstname firstname :surname surname :city city})))))}))
 
 (defn add-handler [req]
