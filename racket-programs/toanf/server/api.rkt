@@ -38,8 +38,6 @@
                         'ast (third data-list)
                         'anf (fourth data-list)))))
 
-
-
 (define (get-anf-exps req)
   (define data (query-rows the-db (format "select * from a_normal_forms")))
   (define data-list (map vector->list data))
