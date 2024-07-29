@@ -1,0 +1,9 @@
+Note: google chrome was installed from the aur
+
+to upgrade:
+
+```
+$ cd google-chrome
+$ git pull
+$ makepkg -si
+```
