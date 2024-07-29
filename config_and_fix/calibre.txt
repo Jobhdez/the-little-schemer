@@ -1,0 +1,1 @@
+once calibre is installed type `control+m` to do continuous scrolling :-)
