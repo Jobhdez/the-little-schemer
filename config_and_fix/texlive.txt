@@ -1,0 +1,11 @@
+wget http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz
+tar -xzf install-tl-unx.tar.gz
+cd install-tl-*
+
+export TEXLIVE_INSTALL_PREFIX=/home/your_user/texlive
+export TEXLIVE_INSTALL_TEXDIR=/home/your_user/texlive/2018
+
+./install-tl
+
+copy and pase this into ~/.bashrc
+export PATH="/home/user_name/texlive/2018/bin/x86_64-linux:$PATH"
