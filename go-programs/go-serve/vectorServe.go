@@ -50,6 +50,13 @@ type VectorAddEntry struct {
 	Result  []float64 `json:"result"`
 }
 
+type MatrixEntry struct {
+	ID      int      `json:"id"`
+	Matrix1 [][]float64 `json:"matrix1"`
+	Matrix2 [][]float64 `json:"matrix2"`
+	Result  [][]float64 `json:"result"`
+}
+
 func defaultHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Serving:", r.URL.Path, "from", r.Host)
 	w.WriteHeader(http.StatusNotFound)
@@ -234,17 +241,7 @@ func getAllVectorSubssHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(entries)
 }
-
-func toJSONString(data interface{}) string {
-	bytes, _ := json.Marshal(data)
-	return string(bytes)
-}
-
-func fromJSONString(data string) []float64 {
-	var result []float64
-	json.Unmarshal([]byte(data), &result)
-	return result
-}
+ 
 func vectorSubHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Serving:", r.URL.Path, "from", r.Host, r.Method)
 	if r.Method != http.MethodPost {
@@ -316,6 +313,13 @@ func matrixAddHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	
+	insertQuery := `INSERT INTO matrix_add2 (matrix1, matrix2, result) VALUES ($1, $2, $3)`
+	_, err = db.Exec(insertQuery, toJSONString2D(matrices.Matrix1), toJSONString2D(matrices.Matrix2), toJSONString2D(addResult))
+	if err != nil {
+		http.Error(w, "Error inserting into database", http.StatusInternalServerError)
+		return
+	}
 
 	result := MatrixResult{
                 MExp:    addResult,
@@ -362,6 +366,72 @@ func matrixSubHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(result)
 }
 
+func getAllMatrixAddsHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("Serving:", r.URL.Path, "from", r.Host, r.Method)
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed!", http.StatusMethodNotAllowed)
+		return
+	}
+
+	rows, err := db.Query("SELECT id, matrix1, matrix2, result FROM matrix_add2")
+	if err != nil {
+		http.Error(w, "Error querying database", http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	var entries []MatrixEntry
+	for rows.Next() {
+		var entry MatrixEntry
+		var matrix1, matrix2, result string
+
+		err := rows.Scan(&entry.ID, &matrix1, &matrix2, &result)
+		if err != nil {
+			http.Error(w, "Error scanning database row", http.StatusInternalServerError)
+			return
+		}
+
+		entry.Matrix1 = fromJSONString2D(matrix1)
+		entry.Matrix2 = fromJSONString2D(matrix2)
+		entry.Result = fromJSONString2D(result)
+
+		entries = append(entries, entry)
+	}
+
+	if err = rows.Err(); err != nil {
+		http.Error(w, "Error iterating over rows", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(entries)
+}
+
+/* === Utils ==== */
+func toJSONString(data interface{}) string {
+	bytes, _ := json.Marshal(data)
+	return string(bytes)
+}
+
+func fromJSONString(data string) []float64 {
+	var result []float64
+	json.Unmarshal([]byte(data), &result)
+	return result
+}
+
+func toJSONString2D(data [][]float64) string {
+	bytes, _ := json.Marshal(data)
+	return string(bytes)
+}
+
+
+func fromJSONString2D(data string) [][]float64 {
+	var result [][]float64
+	json.Unmarshal([]byte(data), &result)
+	return result
+}
+
 func main() {
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=disable",
@@ -402,6 +472,17 @@ func main() {
 	if err != nil {
 		log.Fatal("Error creating table:", err)
 	}
+
+	createTableQuery3 := `CREATE TABLE IF NOT EXISTS matrix_add2 (
+		id SERIAL PRIMARY KEY,
+		matrix1 TEXT NOT NULL,
+		matrix2 TEXT NOT NULL,
+		result TEXT NOT NULL
+	)`
+	_, err = db.Exec(createTableQuery3)
+	if err != nil {
+		log.Fatal("Error creating table:", err)
+	}
 	arguments := os.Args
 	if len(arguments) != 1 {
 		PORT = ":" + arguments[1]
@@ -420,6 +501,8 @@ func main() {
 	mux.Handle("/api/matrix/sub", http.HandlerFunc(matrixSubHandler))
 	mux.Handle("/api/vector/add/vectors", http.HandlerFunc(getAllVectorAddsHandler))
 	mux.Handle("/api/vector/sub/vectors", http.HandlerFunc(getAllVectorAddsHandler))
+	mux.Handle("/api/matrix/add/matrices", http.HandlerFunc(getAllMatrixAddsHandler))
+
 	mux.Handle("/", http.HandlerFunc(defaultHandler))
 
 	fmt.Println("Ready to serve at", PORT)
