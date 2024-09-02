@@ -15,11 +15,18 @@ type Vectors struct {
 	Vector2 []float64 `json:"vector2"`
 }
 
-type Result struct {
-	Addition       []float64 `json:"addition"`
-	Subtraction    []float64 `json:"subtraction"`
+type Matrices struct {
+	Matrix1 [][]float64 `json:"matrix1"`
+	Matrix2 [][]float64 `json:"matrix2"`
 }
 
+type Result struct {
+	Exp []float64 `json:"exp"`
+}
+
+type MatrixResult struct {
+	MExp [][]float64 `json:"exp"`
+}
 var PORT = ":1234"
 
 func defaultHandler(w http.ResponseWriter, r *http.Request) {
@@ -51,7 +58,36 @@ func vectorSub(v1, v2 []float64) ([]float64, error) {
 	return result, nil
 }
 
-func vectorHandler(w http.ResponseWriter, r *http.Request) {
+func matrixAdd(m1, m2 [][]float64) ([][]float64, error) {
+	if len(m1) != len(m2) && len(m1[0]) != len(m2[0]) {
+		return nil, fmt.Errorf("matrices must be of the same length")
+	}
+	
+	result := make([][]float64, len(m1))
+	for i := range m1 {
+		result[i] = make([]float64, len(m1[0])) // Initialize inner slice
+		for j := range m1[0] {
+			result[i][j] = m1[i][j] + m2[i][j]
+		}
+	}
+	return result, nil
+}
+
+func matrixSub(m1, m2 [][]float64) ([][]float64, error) {
+	if len(m1) != len(m2) && len(m1[0]) != len(m2[0]) {
+		return nil, fmt.Errorf("matrices must be of the same length")
+	}
+	
+	result := make([][]float64, len(m1))
+	for i := range m1 {
+		result[i] = make([]float64, len(m1[0])) // Initialize inner slice
+		for j := range m1[0] {
+			result[i][j] = m1[i][j] - m2[i][j]
+		}
+	}
+	return result, nil
+}
+func vectorAddHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Serving:", r.URL.Path, "from", r.Host, r.Method)
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed!", http.StatusMethodNotAllowed)
@@ -78,6 +114,37 @@ func vectorHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	result := Result{
+                Exp:    addResult,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(result)
+}
+
+func vectorSubHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("Serving:", r.URL.Path, "from", r.Host, r.Method)
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed!", http.StatusMethodNotAllowed)
+		return
+	}
+
+	d, err := io.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, "Error reading request body", http.StatusBadRequest)
+		return
+	}
+
+	var vectors Vectors
+	err = json.Unmarshal(d, &vectors)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, "Error parsing JSON", http.StatusBadRequest)
+		return
+	}
+
+
 	subResult, err := vectorSub(vectors.Vector1, vectors.Vector2)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -85,8 +152,79 @@ func vectorHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	result := Result{
-		Addition:    addResult,
-		Subtraction: subResult,
+		Exp:    subResult,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(result)
+}
+
+func matrixAddHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("Serving:", r.URL.Path, "from", r.Host, r.Method)
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed!", http.StatusMethodNotAllowed)
+		return
+	}
+
+	d, err := io.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, "Error reading request body", http.StatusBadRequest)
+		return
+	}
+
+	var matrices Matrices
+	err = json.Unmarshal(d, &matrices)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, "Error parsing JSON", http.StatusBadRequest)
+		return
+	}
+
+	addResult, err := matrixAdd(matrices.Matrix1, matrices.Matrix2)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	result := MatrixResult{
+                MExp:    addResult,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(result)
+}
+
+func matrixSubHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("Serving:", r.URL.Path, "from", r.Host, r.Method)
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed!", http.StatusMethodNotAllowed)
+		return
+	}
+
+	d, err := io.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, "Error reading request body", http.StatusBadRequest)
+		return
+	}
+
+	var matrices Matrices
+	err = json.Unmarshal(d, &matrices)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, "Error parsing JSON", http.StatusBadRequest)
+		return
+	}
+
+	subResult, err := matrixSub(matrices.Matrix1, matrices.Matrix2)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	result := MatrixResult{
+                MExp:    subResult,
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -107,7 +245,10 @@ func main() {
 		ReadTimeout:  time.Second,
 		WriteTimeout: time.Second,
 	}
-	mux.Handle("/vectors", http.HandlerFunc(vectorHandler))
+	mux.Handle("/api/vectors/add", http.HandlerFunc(vectorAddHandler))
+	mux.Handle("/api/vectors/sub", http.HandlerFunc(vectorSubHandler))
+	mux.Handle("/api/matrices/add", http.HandlerFunc(matrixAddHandler))
+	mux.Handle("/api/matrices/sub", http.HandlerFunc(matrixSubHandler))
 	mux.Handle("/", http.HandlerFunc(defaultHandler))
 
 	fmt.Println("Ready to serve at", PORT)
