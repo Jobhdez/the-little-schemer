@@ -335,13 +335,21 @@ func main() {
 		WriteTimeout: time.Second,
 	}
 
-	mux.Handle("/api/vector/add", makeVectorOpHandler(vectorAdd, "vector_add"))
-	mux.Handle("/api/vector/sub", makeVectorOpHandler(vectorSub, "vector_sub"))
-	mux.Handle("/api/vector/add/vectors", makeGetAllHandler("SELECT * FROM vector_add", scanVectorEntry))
-	mux.Handle("/api/vector/sub/vectors", makeGetAllHandler("SELECT * FROM vector_sub", scanVectorEntry))
+	vectorAddHandler := makeVectorOpHandler(vectorAdd, "vector_add")
+	vectorSubHandler := makeVectorOpHandler(vectorSub, "vector_sub")
+	matrixAddHandler := makeMatrixOpHandler(matrixAdd, "matrix_add2")
+	
+	vectorGetAllHandler := makeGetAllHandler("SELECT * FROM vector_add", scanVectorEntry)
+	matrixGetAllHandler := makeGetAllHandler("SELECT * FROM matrix_add2", scanMatrixEntry)
 
-	mux.Handle("/api/matrix/add", makeMatrixOpHandler(matrixAdd, "matrix_add2"))
-	mux.Handle("/api/matrix/add/matrices", makeGetAllHandler("SELECT * FROM matrix_add2", scanMatrixEntry))
+	mux.Handle("/api/vector/add", vectorAddHandler)
+	mux.Handle("/api/vector/sub", vectorSubHandler)
+	mux.Handle("/api/vector/add/vectors", vectorGetAllHandler)
+	mux.Handle("/api/vector/sub/vectors", vectorGetAllHandler)
+
+	mux.Handle("/api/matrix/add", matrixAddHandler)
+	mux.Handle("/api/matrix/add/matrices", matrixGetAllHandler)
+
 
 	mux.HandleFunc("/", defaultHandler)
 
