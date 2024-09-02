@@ -193,6 +193,48 @@ func getAllVectorAddsHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(entries)
 }
 
+func getAllVectorSubssHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("Serving:", r.URL.Path, "from", r.Host, r.Method)
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed!", http.StatusMethodNotAllowed)
+		return
+	}
+
+	rows, err := db.Query("SELECT id, vector1, vector2, result FROM vector_sub")
+	if err != nil {
+		http.Error(w, "Error querying database", http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	var entries []VectorAddEntry
+	for rows.Next() {
+		var entry VectorAddEntry
+		var vector1, vector2, result string
+
+		err := rows.Scan(&entry.ID, &vector1, &vector2, &result)
+		if err != nil {
+			http.Error(w, "Error scanning database row", http.StatusInternalServerError)
+			return
+		}
+
+		entry.Vector1 = fromJSONString(vector1)
+		entry.Vector2 = fromJSONString(vector2)
+		entry.Result = fromJSONString(result)
+
+		entries = append(entries, entry)
+	}
+
+	if err = rows.Err(); err != nil {
+		http.Error(w, "Error iterating over rows", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(entries)
+}
+
 func toJSONString(data interface{}) string {
 	bytes, _ := json.Marshal(data)
 	return string(bytes)
@@ -230,6 +272,14 @@ func vectorSubHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+
+	insertQuery := `INSERT INTO vector_sub (vector1, vector2, result) VALUES ($1, $2, $3)`
+	_, err = db.Exec(insertQuery, toJSONString(vectors.Vector1), toJSONString(vectors.Vector2), toJSONString(subResult))
+	if err != nil {
+		http.Error(w, "Error inserting into database", http.StatusInternalServerError)
+		return
+	}
+
 
 	result := Result{
 		Exp:    subResult,
@@ -341,6 +391,17 @@ func main() {
 	if err != nil {
 		log.Fatal("Error creating table:", err)
 	}
+
+	createTableQuery2 := `CREATE TABLE IF NOT EXISTS vector_sub (
+		id SERIAL PRIMARY KEY,
+		vector1 TEXT NOT NULL,
+		vector2 TEXT NOT NULL,
+		result TEXT NOT NULL
+	)`
+	_, err = db.Exec(createTableQuery2)
+	if err != nil {
+		log.Fatal("Error creating table:", err)
+	}
 	arguments := os.Args
 	if len(arguments) != 1 {
 		PORT = ":" + arguments[1]
@@ -353,11 +414,12 @@ func main() {
 		ReadTimeout:  time.Second,
 		WriteTimeout: time.Second,
 	}
-	mux.Handle("/api/vectors/add", http.HandlerFunc(vectorAddHandler))
-	mux.Handle("/api/vectors/sub", http.HandlerFunc(vectorSubHandler))
-	mux.Handle("/api/matrices/add", http.HandlerFunc(matrixAddHandler))
-	mux.Handle("/api/matrices/sub", http.HandlerFunc(matrixSubHandler))
-	mux.Handle("/api/vectors", http.HandlerFunc(getAllVectorAddsHandler))
+	mux.Handle("/api/vector/add", http.HandlerFunc(vectorAddHandler))
+	mux.Handle("/api/vector/sub", http.HandlerFunc(vectorSubHandler))
+	mux.Handle("/api/matrix/add", http.HandlerFunc(matrixAddHandler))
+	mux.Handle("/api/matrix/sub", http.HandlerFunc(matrixSubHandler))
+	mux.Handle("/api/vector/add/vectors", http.HandlerFunc(getAllVectorAddsHandler))
+	mux.Handle("/api/vector/sub/vectors", http.HandlerFunc(getAllVectorAddsHandler))
 	mux.Handle("/", http.HandlerFunc(defaultHandler))
 
 	fmt.Println("Ready to serve at", PORT)
