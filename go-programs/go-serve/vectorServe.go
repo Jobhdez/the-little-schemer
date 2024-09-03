@@ -9,6 +9,8 @@ import (
 	"net/http"
 	"os"
 	"time"
+	"strings"
+	"strconv"
 
 	_ "github.com/lib/pq"
 )
@@ -33,12 +35,21 @@ type Matrices struct {
 	Matrix2 [][]float64 `json:"matrix2"`
 }
 
+type Polynomials struct {
+	Poly1 []float64 `json:"poly1"`
+	Poly2 []float64 `json:"poly2"`
+}
+
 type Result struct {
 	Exp []float64 `json:"exp"`
 }
 
 type MatrixResult struct {
 	MExp [][]float64 `json:"exp"`
+}
+
+type PolyResult struct {
+	PExp []float64 `json:"exp"`
 }
 
 var PORT = ":1234"
@@ -55,6 +66,14 @@ type MatrixEntry struct {
 	Matrix1 [][]float64 `json:"matrix1"`
 	Matrix2 [][]float64 `json:"matrix2"`
 	Result  [][]float64 `json:"result"`
+}
+
+type PolyEntry struct {
+	ID      int       `json:"id"`
+	Poly1 []float64 `json:"poly1"`
+	Poly2 []float64 `json:"poly2"`
+	Result  []float64 `json:"result"`
+	ResultMath string `json:"result_math"`
 }
 
 func defaultHandler(w http.ResponseWriter, r *http.Request) {
@@ -146,6 +165,49 @@ func makeMatrixOpHandler(operation func([][]float64, [][]float64) ([][]float64, 
 	}
 }
 
+func makePolyOpHandler(operation func([]float64, []float64) ([]float64, error), tableName string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		log.Println("Serving:", r.URL.Path, "from", r.Host, r.Method)
+		if r.Method != http.MethodPost {
+			http.Error(w, "Method not allowed!", http.StatusMethodNotAllowed)
+			return
+		}
+
+		d, err := io.ReadAll(r.Body)
+		if err != nil {
+			http.Error(w, "Error reading request body", http.StatusBadRequest)
+			return
+		}
+
+		var polynomials Polynomials
+		err = json.Unmarshal(d, &polynomials)
+		if err != nil {
+			log.Println(err)
+			http.Error(w, "Error parsing JSON", http.StatusBadRequest)
+			return
+		}
+
+		result, err := operation(polynomials.Poly1, polynomials.Poly2)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		insertQuery := fmt.Sprintf(`INSERT INTO %s (poly1, poly2, result, result_math) VALUES ($1, $2, $3, $4)`, tableName)
+		polyString := polyToString(result)
+		
+		_, err = db.Exec(insertQuery, toJSONString(polynomials.Poly1), toJSONString(polynomials.Poly2), toJSONString(result), polyString)
+		if err != nil {
+			http.Error(w, "Error inserting into database", http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(PolyResult{PExp: result})
+	}
+}
+
 func makeGetAllHandler(query string, scanFunc func(*sql.Rows) (interface{}, error)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		log.Println("Serving:", r.URL.Path, "from", r.Host, r.Method)
@@ -212,6 +274,21 @@ func scanMatrixEntry(rows *sql.Rows) (interface{}, error) {
 	return entry, nil
 }
 
+func scanPolyEntry(rows *sql.Rows) (interface{}, error) {
+	var entry PolyEntry
+	var poly1, poly2, result, result_math string
+
+	err := rows.Scan(&entry.ID, &poly1, &poly2, &result, &result_math)
+	if err != nil {
+		return nil, err
+	}
+
+	entry.Poly1 = fromJSONString(poly1)
+	entry.Poly2 = fromJSONString(poly2)
+	entry.Result = fromJSONString(result)
+	entry.ResultMath = result_math
+	return entry, nil
+}
 /* === Linear Algebra === */
 
 func vectorAdd(v1, v2 []float64) ([]float64, error) {
@@ -251,7 +328,27 @@ func matrixAdd(m1, m2 [][]float64) ([][]float64, error) {
 }
 
 /* === Polynomials === */
-// not yet implemented ...
+func polyAdd(p1, p2 []float64) ([]float64, error) {
+	if len(p1) != len(p2) {
+		return nil, fmt.Errorf("polynomials must hae the same length")
+	}
+	result := make([]float64, len(p1))
+	for i := range p1 {
+		result[i] = p1[i] + p2[i]
+	}
+	return result, nil
+}
+
+func polySub(p1, p2 []float64) ([]float64, error) {
+	if len(p1) != len(p2) {
+		return nil, fmt.Errorf("polynomials must hae the same length")
+	}
+	result := make([]float64, len(p1))
+	for i := range p1 {
+		result[i] = p1[i] - p2[i]
+	}
+	return result, nil
+}
 
 /* === Utils ==== */
 func toJSONString(data interface{}) string {
@@ -274,6 +371,35 @@ func fromJSONString2D(data string) [][]float64 {
 	var result [][]float64
 	json.Unmarshal([]byte(data), &result)
 	return result
+}
+
+func polyToString(coeffs []float64) string {
+	var terms []string
+
+	degree := len(coeffs) - 1
+
+	for i, coeff := range coeffs {
+		if coeff == 0 {
+			continue
+		}
+
+		coeffStr := strconv.FormatFloat(coeff, 'f', -1, 64)
+		
+		exponent := degree - i
+
+		var term string
+		switch exponent {
+		case 0:
+			term = fmt.Sprintf("%s", coeffStr)
+		case 1:
+			term = fmt.Sprintf("%sx", coeffStr)
+		default:
+			term = fmt.Sprintf("%sx^%d", coeffStr, exponent)
+		}
+		terms = append(terms, term)
+	}
+
+	return strings.Join(terms, " + ")
 }
 
 
@@ -313,6 +439,20 @@ func main() {
 			matrix2 TEXT NOT NULL,
 			result TEXT NOT NULL
 		)`,
+		`CREATE TABLE IF NOT EXISTS poly_add (
+			id SERIAL PRIMARY KEY,
+			poly1 TEXT NOT NULL,
+			poly2 TEXT NOT NULL,
+			result TEXT NOT NULL,
+                        result_math TEXT NOT NULL
+		)`,
+		`CREATE TABLE IF NOT EXISTS poly_sub (
+			id SERIAL PRIMARY KEY,
+			poly1 TEXT NOT NULL,
+			poly2 TEXT NOT NULL,
+			result TEXT NOT NULL,
+                        result_math TEXT NOT NULL
+		)`,
 	}
 
 	for _, createTableQuery := range createTables {
@@ -337,11 +477,18 @@ func main() {
 
 	vectorAddHandler := makeVectorOpHandler(vectorAdd, "vector_add")
 	vectorSubHandler := makeVectorOpHandler(vectorSub, "vector_sub")
+	
 	matrixAddHandler := makeMatrixOpHandler(matrixAdd, "matrix_add2")
+	
+	polynomialAddHandler := makePolyOpHandler(polyAdd, "poly_add")
+	polynomialSubHandler := makePolyOpHandler(polySub, "poly_sub")
 	
 	vectorGetAllHandler := makeGetAllHandler("SELECT * FROM vector_add", scanVectorEntry)
 	matrixGetAllHandler := makeGetAllHandler("SELECT * FROM matrix_add2", scanMatrixEntry)
 
+	polyGetAllHandlerAdd := makeGetAllHandler("SELECT * FROM poly_add", scanPolyEntry)
+	polyGetAllHandlerSub := makeGetAllHandler("SELECT * FROM poly_sub", scanPolyEntry)
+	
 	mux.Handle("/api/vector/add", vectorAddHandler)
 	mux.Handle("/api/vector/sub", vectorSubHandler)
 	mux.Handle("/api/vector/add/vectors", vectorGetAllHandler)
@@ -350,7 +497,10 @@ func main() {
 	mux.Handle("/api/matrix/add", matrixAddHandler)
 	mux.Handle("/api/matrix/add/matrices", matrixGetAllHandler)
 
-
+        mux.Handle("/api/polynomial/add", polynomialAddHandler)
+	mux.Handle("/api/polynomial/sub", polynomialSubHandler)
+	mux.Handle("/api/polynomial/add/polynomials", polyGetAllHandlerAdd)
+	mux.Handle("/api/polynomial/sub/polynomials", polyGetAllHandlerSub)
 	mux.HandleFunc("/", defaultHandler)
 
 	log.Println("Listening on port", PORT)
