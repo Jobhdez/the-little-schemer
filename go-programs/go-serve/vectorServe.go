@@ -30,7 +30,7 @@ type Vectors struct {
 	Vector2 []float64 `json:"vector2"`
 }
 
-type Matrices struct {
+ type Matrices struct {
 	Matrix1 [][]float64 `json:"matrix1"`
 	Matrix2 [][]float64 `json:"matrix2"`
 }
@@ -350,6 +350,19 @@ func polySub(p1, p2 []float64) ([]float64, error) {
 	return result, nil
 }
 
+func polyMul(p1, p2 []float64) ([]float64, error) {
+	if len(p1) != len(p2) {
+		return nil, fmt.Errorf("polynomials must have the same length")
+	}
+	result := make([]float64, len(p1) + len(p2) - 1)
+	for i := range p1 {
+		for j := range p2 {
+			result[i+j] += p1[i] * p2[j]
+		}
+	}
+	return result, nil
+}
+
 /* === Utils ==== */
 func toJSONString(data interface{}) string {
 	bytes, _ := json.Marshal(data)
@@ -453,6 +466,13 @@ func main() {
 			result TEXT NOT NULL,
                         result_math TEXT NOT NULL
 		)`,
+		`CREATE TABLE IF NOT EXISTS poly_mul (
+			id SERIAL PRIMARY KEY,
+			poly1 TEXT NOT NULL,
+			poly2 TEXT NOT NULL,
+			result TEXT NOT NULL,
+                        result_math TEXT NOT NULL
+		)`,
 	}
 
 	for _, createTableQuery := range createTables {
@@ -482,12 +502,13 @@ func main() {
 	
 	polynomialAddHandler := makePolyOpHandler(polyAdd, "poly_add")
 	polynomialSubHandler := makePolyOpHandler(polySub, "poly_sub")
-	
+	polynomialMulHandler := makePolyOpHandler(polyMul,"poly_mul")
 	vectorGetAllHandler := makeGetAllHandler("SELECT * FROM vector_add", scanVectorEntry)
 	matrixGetAllHandler := makeGetAllHandler("SELECT * FROM matrix_add2", scanMatrixEntry)
 
 	polyGetAllHandlerAdd := makeGetAllHandler("SELECT * FROM poly_add", scanPolyEntry)
 	polyGetAllHandlerSub := makeGetAllHandler("SELECT * FROM poly_sub", scanPolyEntry)
+	polyGetAllHandlerMul := makeGetAllHandler("SELECT * FROM poly_mul", scanPolyEntry)
 	
 	mux.Handle("/api/vector/add", vectorAddHandler)
 	mux.Handle("/api/vector/sub", vectorSubHandler)
@@ -499,9 +520,11 @@ func main() {
 
         mux.Handle("/api/polynomial/add", polynomialAddHandler)
 	mux.Handle("/api/polynomial/sub", polynomialSubHandler)
+	mux.Handle("/api/polynomial/mul", polynomialMulHandler)
 	
 	mux.Handle("/api/polynomial/add/polynomials", polyGetAllHandlerAdd)
 	mux.Handle("/api/polynomial/sub/polynomials", polyGetAllHandlerSub)
+	mux.Handle("/api/polynomial/mul/polynomials", polyGetAllHandlerMul)
 	mux.HandleFunc("/", defaultHandler)
 
 	log.Println("Listening on port", PORT)
