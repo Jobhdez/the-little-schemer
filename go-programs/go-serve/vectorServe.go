@@ -499,6 +499,7 @@ func main() {
 
         mux.Handle("/api/polynomial/add", polynomialAddHandler)
 	mux.Handle("/api/polynomial/sub", polynomialSubHandler)
+	
 	mux.Handle("/api/polynomial/add/polynomials", polyGetAllHandlerAdd)
 	mux.Handle("/api/polynomial/sub/polynomials", polyGetAllHandlerSub)
 	mux.HandleFunc("/", defaultHandler)
